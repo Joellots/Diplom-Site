@@ -39,7 +39,7 @@ for doc in creds:
 # Convert Firestore documents to the format expected by stauth.Authenticate
 config = {
     'credentials': {
-        creds.id: creds_dict[creds.id],
+        creds_dict,
     }
 }
 
