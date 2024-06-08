@@ -21,7 +21,7 @@ st.set_page_config(page_title="ОБНАРУЖЕНИЕ СЕТЕВЫХ АНОМА�
 # with file_path.open('rb') as file:
 #     hashed_passwords = pickle.load(file)
 
-with open('config.yaml') as file:
+with open('Joellots/Diplom-Site/Anomaly_Files/config.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)
 
 authenticator = stauth.Authenticate(
