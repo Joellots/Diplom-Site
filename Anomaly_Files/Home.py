@@ -101,7 +101,7 @@ if authentication_status == None:
             
             doc_ref = db.collection('credentials').document('usernames').collection(username_of_forgotten_password)
             
-            doc_ref.add({
+            doc_ref.document().set({
                 'name': name_of_registered_user,
                 'email': email_of_registered_user,
                 'password': random_password,
