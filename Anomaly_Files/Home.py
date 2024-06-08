@@ -77,7 +77,7 @@ if authentication_status == None:
                     for doc in username_col.stream():
                         user_data[doc.id] = doc.to_dict()
                     password = user_data[username_of_forgotten_password]['password']
-                    st.write(password)
+                    st.write(user_data)
                     break
                 st.write(password)
                 #password = pass_ref.get()'password']
