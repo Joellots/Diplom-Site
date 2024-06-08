@@ -78,7 +78,8 @@ if authentication_status == None:
                 # with open(config_path, 'r') as file:
                 #     data = yaml.safe_load(file)
                 pass_ref = db.collection('credentials').document('usernames').collection(username_of_forgotten_password)
-                password = pass_ref.get()['password']
+                st.write(pass_ref.get())
+                #password = pass_ref.get()'password']
 
                 st.success('Ваш пароль был отправлен на вашу почту')
 
