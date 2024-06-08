@@ -45,7 +45,7 @@ creds = cred_ref.get()
 st.write(creds)
 creds_dict = copy_nested_dict(creds)
 
-st.write(creds_dict)
+#st.write(creds_dict)
 # Convert Firestore documents to the format expected by stauth.Authenticate
 config = {
     'credentials': {
