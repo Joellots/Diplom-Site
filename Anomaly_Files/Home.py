@@ -98,9 +98,9 @@ if authentication_status == None:
             letters = string.ascii_letters  # This includes both lowercase and uppercase letters
             random_password = ''.join(random.choice(letters) for i in range(10))
 
-            db = firestore.client()
-            db_new = db.collection('credentials').document('username').collection(username_of_registered_user).document(username_of_registered_user)
-
+            firebase_admin.initialize_app(cred)
+            db_new = firestore.client().collection('credentials').document('username').collection(username_of_registered_user).document(username_of_registered_user)
+           
             #doc_ref = db.collection('credentials').document('usernames').collection(username_of_registered_user)
            
             db_new.set({
