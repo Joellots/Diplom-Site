@@ -43,6 +43,7 @@ for username_col in usernames_ref:
         user_data[doc.id] = doc.to_dict()
     creds['usernames'] = user_data
 
+st.write(creds)
 
 authenticator = stauth.Authenticate(
     creds,
@@ -54,7 +55,7 @@ authenticator = stauth.Authenticate(
 )
 name, authentication_status, username = authenticator.login('main', 'Введите свое имя пользователя и пароль', fields={'Form name': 'Авторизоваться', 'Username':'Имя пользователя', 'Password':'Пароль', 'Login':'Вход'})
 
-
+st.write(name)
 if authentication_status == False:
     st.error('Имя пользователя/пароль неверны')
 if authentication_status == None:
