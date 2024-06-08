@@ -35,9 +35,8 @@ def get_creds(db):
         # Fetch email and name for this username
         for doc in username_col.stream():
             user_data[doc.id] = doc.to_dict()
-            st.write(user_data[doc.id])
-        creds['usernames'] = user_data
-        
+            creds['usernames'] = user_data
+                
     return creds
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
