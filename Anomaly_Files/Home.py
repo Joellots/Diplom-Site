@@ -12,6 +12,7 @@ import yaml
 from yaml.loader import SafeLoader
 import os
 
+from google.cloud import firestore
 import firebase_admin
 from firebase_admin import credentials, firestore
 from firebase_admin import auth
@@ -24,27 +25,30 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 config_path = os.path.join(current_dir, 'config.yaml')
 
 
-cred = credentials.Certificate(os.path.join(current_dir, 'diplom-site-1adda-ad818bf284ff.json'))
-if not firebase_admin._apps:
-    firebase_admin.initialize_app(cred)
-db = firestore.client()
+db = firestore.Client.from_service_account_json(os.path.join(current_dir, 'diplom-site-1adda-ad818bf284ff.json'))
 
+# Create a reference to the credentials.
+cred_ref = db.collection("credentials")
+# Then get the data at that reference.
+cred = doc_ref.get()
 
-saved_creds =  db.collection('credentials').get()
-print(saved_creds)
 creds_dict = {}
 for doc in saved_creds:
-    creds_dict[doc.id] = doc.to_dict()
+    creds_dict[cred.id] = doc.to_dict()
 
 # Convert Firestore documents to the format expected by stauth.Authenticate
 config = {
     'credentials': {
-        'usernames': creds_dict,
+        cred.id: creds_dict[cred.id],
     }
 }
 
 authenticator = stauth.Authenticate(
-    config['credentials']['usernames'],
+    config['credentials'],
+    config['credentials']['name'],
+    config['credentials']['name']['key'],
+    config['credentials']['name']['expiry'],
+    
 )
 name, authentication_status, username = authenticator.login('main', 'Введите свое имя пользователя и пароль', fields={'Form name': 'Авторизоваться', 'Username':'Имя пользователя', 'Password':'Пароль', 'Login':'Вход'})
 
@@ -70,10 +74,10 @@ if authentication_status == None:
                 # with open('config.yaml', 'w') as file:
                 #     yaml.safe_dump(data, file)
 
-                with open(config_path, 'r') as file:
-                    data = yaml.safe_load(file)
-                pass_ref = db.collection('credentials').document('password')
-                password = pass_ref.get()
+                # with open(config_path, 'r') as file:
+                #     data = yaml.safe_load(file)
+                pass_ref = db.collection('credentials').document(username_of_forgotten_password)
+                password = pass_ref.get()['password']
 
                 st.success('Ваш пароль был отправлен на вашу почту')
 
@@ -97,14 +101,17 @@ if authentication_status == None:
             import random
             import string
             letters = string.ascii_letters  # This includes both lowercase and uppercase letters
-            random_string = ''.join(random.choice(letters) for i in range(10))
+            random_password = ''.join(random.choice(letters) for i in range(10))
+            random_key = ''.join(random.choice(letters) for i in range(10))
 
-            user = auth.create_user(
-                email=email_of_registered_user,
-                password=random_string,
-                display_name=name_of_registered_user,
-                uid=username_of_registered_user,
-            )
+            doc_ref = db.collection('users').document('user_id')
+            doc_ref.set({
+                'name': name_of_registered_user,
+                'email': email_of_registered_user,
+                'key': random_key,
+                'password': random_password,
+                'expiry': 10,
+            })
             if email_of_registered_user:            
                 
                 st.success('Регистрация прошла успешно! Войдите в систему, используя учетные данные, отправленные на указанный электронный адрес')
