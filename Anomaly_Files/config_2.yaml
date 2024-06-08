@@ -1,0 +1,17 @@
+cookie:
+  expiry_days: 10
+  key: rkey1
+  name: rcookie
+credentials:
+  usernames:
+    daniel:
+      email: okorejoel2017@gmail.com
+      name: Daniel Pavlov
+      password: TyAbRcSA
+    okore:
+      email: okorejoellots@gmail.com
+      name: Okore Joel
+      password: P2eL3iESi9prhFlt
+preauthorized:
+  emails:
+  - okorejoellots@gmail.com
