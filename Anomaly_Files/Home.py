@@ -24,7 +24,7 @@ st.set_page_config(page_title="ОБНАРУЖЕНИЕ СЕТЕВЫХ АНОМА�
 
 config_path = os.path.join('.', 'config.yaml')
 
-with open('config') as file:
+with open('config_2.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)
 
 authenticator = stauth.Authenticate(
