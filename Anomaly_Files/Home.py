@@ -27,7 +27,7 @@ def get_creds(db):
     # Then get the data at that reference.
     usernames_ref = db.collection('credentials').document('usernames').collections()
     # Iterate over each username collection within 'usernames'
-    creds = {}
+    creds = {"usernames":{}}
     for username_col in usernames_ref:
         username = username_col.id
         # Initialize dictionary for this username
@@ -35,7 +35,7 @@ def get_creds(db):
         # Fetch email and name for this username
         for doc in username_col.stream():
             user_data[doc.id] = doc.to_dict()
-            creds[doc.id] = user_data[doc.id]
+            creds["usernames"][doc.id] = user_data[doc.id]
                 
     return creds
 
