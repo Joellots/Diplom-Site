@@ -15,13 +15,6 @@ import os
 st.set_page_config(page_title="ОБНАРУЖЕНИЕ СЕТЕВЫХ АНОМАЛИЙ", page_icon=":guardsman:", layout="centered")
 
 
-# names = ['Okore', 'Albert']
-# usernames = ['admin', "Albert"]
-
-# file_path = Path(__file__).parent / 'hashed_pw.pkl'
-# with file_path.open('rb') as file:
-#     hashed_passwords = pickle.load(file)
-
 current_dir = os.path.dirname(__file__)
 config_path = os.path.join(current_dir, 'config.yaml')
 
@@ -146,14 +139,14 @@ if authentication_status:
 
     st.logo(os.path.join(current_dir, 'knrtu_logo.png'), link=None)
 
-    # @st.cache_data
-    # def load_data():
-    #     url = "Train.txt"  # Replace with the actual URL or path to your dataset
-    #     df = pd.read_csv(url, header=None, names=cd.columns)
-    #     return df
+    
+    def load_data():
+        url = "Train.txt"  # Replace with the actual URL or path to your dataset
+        df = pd.read_csv(url, header=None, names=cd.columns)
+        return df
 
-    # # Load Data
-    # df = load_data()
+    # Load Data
+    df = load_data()
 
     st.title("ОБНАРУЖЕНИЕ АНОМАЛИЙ В СЕТЕВОМ ТРАФИКЕ")
 
