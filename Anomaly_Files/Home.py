@@ -24,6 +24,16 @@ st.set_page_config(page_title="ОБНАРУЖЕНИЕ СЕТЕВЫХ АНОМА�
 current_dir = os.path.dirname(os.path.abspath(__file__))
 config_path = os.path.join(current_dir, 'config.yaml')
 
+## Function for getting credentials from DB
+def copy_nested_dict(original_dict):
+    copied_dict = {}
+    for key, value in original_dict.items():
+        if isinstance(value, dict):
+            copied_dict[key] = copy_nested_dict(value)
+        else:
+            copied_dict[key] = value
+    return copied_dict
+
 
 db = firestore.Client.from_service_account_json(os.path.join(current_dir, 'anomaly-detection-d4b91-firebase-adminsdk-lwlgg-d92f4bd41c.json'))
 
@@ -32,11 +42,10 @@ cred_ref = db.collection("credentials")
 # Then get the data at that reference.
 creds = cred_ref.get()
 
-creds_dict = {}
-for doc in creds:
-    creds_dict[doc.id] = doc.to_dict()
+st.write(creds)
+creds_dict = copy_nested_dict(creds)
 
-st.write(creds.to_dict())
+st.write(creds_dict)
 # Convert Firestore documents to the format expected by stauth.Authenticate
 config = {
     'credentials': {
