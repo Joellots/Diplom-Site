@@ -35,7 +35,9 @@ def get_creds(db):
         # Fetch email and name for this username
         for doc in username_col.stream():
             user_data[doc.id] = doc.to_dict()
+            st.write(user_data[doc.id])
         creds['usernames'] = user_data
+        
     return creds
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -46,8 +48,6 @@ st.logo(os.path.join(current_dir, 'knrtu_logo.png'), link=None)
 db = firestore.Client.from_service_account_json(os.path.join(current_dir, 'anomaly-detection-d4b91-firebase-adminsdk-lwlgg-d92f4bd41c.json'))
 
 creds = get_creds(db)
-
-st.write(creds)
 
 authenticator = stauth.Authenticate(
     creds,
