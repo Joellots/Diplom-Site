@@ -35,7 +35,7 @@ def get_creds(db):
         # Fetch email and name for this username
         for doc in username_col.stream():
             user_data[doc.id] = doc.to_dict()
-            creds['usernames'] = user_data
+            creds['usernames'][doc.id] = user_data[doc.id]
                 
     return creds
 
