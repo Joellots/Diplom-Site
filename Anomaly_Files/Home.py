@@ -57,7 +57,7 @@ name, authentication_status, username = authenticator.login(
 
 if authentication_status == False:
     st.error('Имя пользователя/пароль неверны')
-if authentication_status == None:
+elif not name and authentication_status == None:
     st.warning('Пожалуйста, введите имя пользователя и пароль')
 
     with st.expander("Забыли пароль?"):
