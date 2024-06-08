@@ -37,12 +37,17 @@ db = firestore.Client.from_service_account_json(os.path.join(current_dir, 'anoma
 # Create a reference to the credentials.
 cred_ref = db.collection("credentials")
 # Then get the data at that reference.
-creds = cred_ref.get()
-creds_dict = {} 
-
-for doc in creds.document('usernames'):
-        creds_dict[doc.id] = doc.to_dict()
-# creds_dict = copy_nested_dict(creds)
+creds = {}
+usernames_ref = db.collection('credentials').document('usernames').collections()
+    # Iterate over each username collection within 'usernames'
+    for username_col in usernames_ref:
+        username = username_col.id
+        # Initialize dictionary for this username
+        user_data = {}
+        # Fetch email and name for this username
+        for doc in username_col.stream():
+            user_data[doc.id] = doc.to_dict()
+        creds[username] = user_data
 
 st.write(creds_dict)
 # Convert Firestore documents to the format expected by stauth.Authenticate
