@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import col_definition as cd
+import os
 
 
 st.set_page_config(page_title="ВИЗУАЛИЗАЦИЯ ДАННЫХ", page_icon=":guardsman:", layout="wide")
