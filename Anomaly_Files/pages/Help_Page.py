@@ -52,7 +52,9 @@ st.markdown(
 )
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-st.logo(os.path.join(current_dir,"knrtu_logo.png"), link=None)
+# Get the parent directory
+parent_directory = os.path.abspath(os.path.join(current_directory, os.pardir))
+st.logo(os.path.join(parent_directory,"knrtu_logo.png"), link=None)
 
 # Render the content using Streamlit markdown
 st.title("ПОНИМАНИЕ ОСОБЕННОСТЕЙ СЕТЕВОГО ТРАФИКА")
