@@ -43,12 +43,6 @@ for username_col in usernames_ref:
     creds['usernames'] = user_data
 
 st.write(creds)
-# Convert Firestore documents to the format expected by stauth.Authenticate
-config = {
-    'credentials': {
-        creds_dict,
-    }
-}
 
 authenticator = stauth.Authenticate(
     cred,
