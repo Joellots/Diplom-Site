@@ -68,7 +68,7 @@ if authentication_status == None:
             if username_of_forgotten_password:
                 
                 # pass_ref = db.collection('credentials').document('usernames').collection(username_of_forgotten_password)
-                pass_ref = db.collection('credentials').document('usernames').collections()
+                pass_ref = db.collection('credentials').document('usernames').collections().stream()
                 st.write(pass_ref)
                 #password = pass_ref.get()'password']
 
