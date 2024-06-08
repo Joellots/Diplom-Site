@@ -8,7 +8,7 @@ import os
 
 st.set_page_config(page_title="ВИЗУАЛИЗАЦИЯ ДАННЫХ", page_icon=":guardsman:", layout="wide")
 
-current_dir = os.path.dirname(__file__)
+current_dir = os.path.dirname(os.path.abspath(__file__))
 st.title('Визуализация Данных об Обнаружении Аномалий')
 
 st.markdown("""
