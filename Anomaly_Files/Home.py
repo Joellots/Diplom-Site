@@ -26,9 +26,9 @@ config_path = os.path.join(current_dir, 'config.yaml')
 
 cred = credentials.Certificate(os.path.join(current_dir, 'diplom-site-1adda-ad818bf284ff.json'))
 
-#db = firestore.client()
+db = firestore.client()
 
-saved_creds = doc_ref = db.collection('credentials')
+saved_creds =  db.collection('credentials')
 print(saved_creds)
 config = json.dumps(saved_creds.collection('credentials').to_dict())
 
