@@ -17,9 +17,26 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 from firebase_admin import auth
 import json
+import time
 
 st.set_page_config(page_title="ОБНАРУЖЕНИЕ СЕТЕВЫХ АНОМАЛИЙ", page_icon=":guardsman:", layout="centered")
 
+def get_creds():
+    # Create a reference to the credentials.
+    cred_ref = db.collection("credentials")
+    # Then get the data at that reference.
+    usernames_ref = db.collection('credentials').document('usernames').collections()
+    # Iterate over each username collection within 'usernames'
+    creds = {}
+    for username_col in usernames_ref:
+        username = username_col.id
+        # Initialize dictionary for this username
+        user_data = {}
+        # Fetch email and name for this username
+        for doc in username_col.stream():
+            user_data[doc.id] = doc.to_dict()
+        creds['usernames'] = user_data
+    return creds
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 config_path = os.path.join(current_dir, 'config.yaml')
@@ -28,20 +45,12 @@ st.logo(os.path.join(current_dir, 'knrtu_logo.png'), link=None)
 
 db = firestore.Client.from_service_account_json(os.path.join(current_dir, 'anomaly-detection-d4b91-firebase-adminsdk-lwlgg-d92f4bd41c.json'))
 
-# Create a reference to the credentials.
-cred_ref = db.collection("credentials")
-# Then get the data at that reference.
-creds = {}
-usernames_ref = db.collection('credentials').document('usernames').collections()
-    # Iterate over each username collection within 'usernames'
-for username_col in usernames_ref:
-    username = username_col.id
-    # Initialize dictionary for this username
-    user_data = {}
-    # Fetch email and name for this username
-    for doc in username_col.stream():
-        user_data[doc.id] = doc.to_dict()
-    creds['usernames'] = user_data
+
+
+while True:
+    creds = get_creds()
+    time.sleep(3)
+
 
 st.write(creds)
 
