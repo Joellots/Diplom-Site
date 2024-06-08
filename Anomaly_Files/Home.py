@@ -34,7 +34,7 @@ creds = cred_ref.get()
 
 creds_dict = {}
 for doc in creds:
-    creds_dict[creds.id] = doc.to_dict()
+    creds_dict[doc.id] = doc.to_dict()
 
 # Convert Firestore documents to the format expected by stauth.Authenticate
 config = {
