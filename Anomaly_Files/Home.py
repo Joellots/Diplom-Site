@@ -24,7 +24,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 config_path = os.path.join(current_dir, 'config.yaml')
 
 
-cred = credentials(os.path.join(current_dir, 'diplom-site-1adda-ad818bf284ff.json'))
+cred = credentials.Certificate(os.path.join(current_dir, 'diplom-site-1adda-ad818bf284ff.json'))
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
