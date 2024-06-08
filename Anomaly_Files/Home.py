@@ -162,7 +162,7 @@ if authentication_status:
     user_input = {}
 
     # Access the components from the loaded file
-    Forest_Map = load(r"C:\Users\okore\OneDrive\Desktop\MACHINE_LEARNING\Anomaly_Detection\streamlit\Forest_Map")
+    Forest_Map = load(os.path.join(current_dir,"Forest_Map"))
     model = Forest_Map['model']
     scaler = Forest_Map['scaler']
     encoder = Forest_Map['encoder']
