@@ -30,7 +30,7 @@ db = firestore.client()
 
 saved_creds =  db.collection('credentials')
 print(saved_creds)
-config = json.dumps(saved_creds.to_dict())
+config = json.dumps(saved_creds.get().to_dict())
 
 
 authenticator = stauth.Authenticate(
