@@ -70,7 +70,7 @@ if authentication_status == None:
                 st.success('Ваш пароль был отправлен на вашу почту')
                 from send_mail import send_email
                 send_email(2, username_of_forgotten_password, email_of_forgotten_password, password)
-            if username_of_forgotten_password:
+            else:
                 st.error('Имя пользователя не найдено')
         except Exception as e:
             st.error(e)
