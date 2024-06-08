@@ -66,18 +66,9 @@ if authentication_status == None:
             username_of_forgotten_password, email_of_forgotten_password, new_random_password = authenticator.forgot_password(fields={'Form name': 'Запомнить пароль', 'Username':'Имя пользователя', 'Submit':'Далее'})
         
             if username_of_forgotten_password:
-                # with open('config.yaml', 'r') as file:
-                #     data = yaml.safe_load(file)
-
-                # data['credentials']['usernames'][username_of_forgotten_password]['password'] = new_random_password
                 
-                
-                # with open('config.yaml', 'w') as file:
-                #     yaml.safe_dump(data, file)
-
-                # with open(config_path, 'r') as file:
-                #     data = yaml.safe_load(file)
-                pass_ref = db.collection('credentials').document('usernames').collection(username_of_forgotten_password)
+                # pass_ref = db.collection('credentials').document('usernames').collection(username_of_forgotten_password)
+                pass_ref = db.collection('credentials').document('usernames').collections()
                 st.write(pass_ref)
                 #password = pass_ref.get()'password']
 
