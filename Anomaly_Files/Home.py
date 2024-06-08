@@ -98,10 +98,13 @@ if authentication_status == None:
             letters = string.ascii_letters  # This includes both lowercase and uppercase letters
             random_password = ''.join(random.choice(letters) for i in range(10))
 
+            db_new = db = firestore.client()
+            db_new.collection('credentials').document('usernames').collection(collection_name)
+
             
-            doc_ref = db.collection('credentials').document('usernames').collection(username_of_forgotten_password)
-            st.write(doc_ref)
-            doc_ref.document().set({
+            #doc_ref = db.collection('credentials').document('usernames').collection(username_of_forgotten_password)
+            st.write(db_new)
+            db_new.document().set({
                 'name': name_of_registered_user,
                 'email': email_of_registered_user,
                 'password': random_password,
