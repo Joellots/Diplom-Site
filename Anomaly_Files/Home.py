@@ -256,7 +256,7 @@ if authentication_status:
                 remove_audio()
 
     # Display the image
-    webp_image = Image.open(r"C:\Users\okore\OneDrive\Desktop\MACHINE_LEARNING\Anomaly_Detection\streamlit\detection_img.jpg")
+    webp_image = Image.open(os.path.join(current_dir, "detection_img.jpg"))
     jpg_image = webp_image.convert("RGB")
     st.image(jpg_image, caption="Обнаружение аномалий в кибербезопасности сети", width=800)
 
