@@ -59,7 +59,7 @@ name, authentication_status, username = authenticator.login(
 
 if authentication_status == False:
     st.error('Имя пользователя/пароль неверны')
-elif authentication_status == None:
+if authentication_status == None:
     st.warning('Пожалуйста, введите имя пользователя и пароль')
 
     with st.expander("Забыли пароль?"):
@@ -67,12 +67,13 @@ elif authentication_status == None:
             username_of_forgotten_password, email_of_forgotten_password, new_random_password = authenticator.forgot_password(
                 fields={'Form name': 'Запомнить пароль', 'Username':'Имя пользователя', 'Submit':'Далее'}
             )
+            if email_of_forgotten_password not None:
             if email_of_forgotten_password:
                 password = creds['usernames'][username_of_forgotten_password]['word']
                 st.success('Ваш пароль был отправлен на вашу почту')
                 from send_mail import send_email
                 send_email(2, username_of_forgotten_password, email_of_forgotten_password, password)
-            else:
+            elif username_of_forgotten_password == False:
                 st.error('Имя пользователя не найдено')
         except Exception as e:
             st.error(e)
