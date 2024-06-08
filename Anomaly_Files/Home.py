@@ -99,7 +99,7 @@ if authentication_status == None:
             random_password = ''.join(random.choice(letters) for i in range(10))
 
             
-            doc_ref = db.collection('credentials').document('usernames').add(username_of_forgotten_password)
+            doc_ref = db.collection('credentials').document('usernames').set(username_of_forgotten_password)
             ref = db.collection('credentials').document('usernames').collection(username_of_forgotten_password)
             ref.add({
                 'name': name_of_registered_user,
