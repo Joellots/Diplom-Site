@@ -22,9 +22,10 @@ st.set_page_config(page_title="ОБНАРУЖЕНИЕ СЕТЕВЫХ АНОМА�
 # with file_path.open('rb') as file:
 #     hashed_passwords = pickle.load(file)
 
-config_path = os.path.join('.', 'config.yaml')
+current_dir = os.path.dirname(__file__)
+config_path = os.path.join(current_dir, 'config.yaml')
 
-with open('config_2.yaml') as file:
+with open(config_path) as file:
     config = yaml.load(file, Loader=SafeLoader)
 
 authenticator = stauth.Authenticate(
