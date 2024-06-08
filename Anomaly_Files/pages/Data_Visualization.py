@@ -7,7 +7,7 @@ import col_definition as cd
 
 st.set_page_config(page_title="ВИЗУАЛИЗАЦИЯ ДАННЫХ", page_icon=":guardsman:", layout="wide")
 
-
+current_dir = os.path.dirname(__file__)
 st.title('Визуализация Данных об Обнаружении Аномалий')
 
 st.markdown("""
@@ -81,7 +81,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.logo("knrtu_logo.png", link=None, icon_image="knrtu_logo.png")
+st.logo(os.path.join(current_dir, 'knrtu_logo.png'), link=None, icon_image="knrtu_logo.png")
 
 
 # Sample DataFrame (Replace this with actual data loading)
