@@ -51,7 +51,8 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.logo("knrtu_logo.png", link=None, icon_image="knrtu_logo.png")
+current_dir = os.path.dirname(os.path.abspath(__file__))
+st.logo(os.path.join(current_dir,"knrtu_logo.png"), link=None)
 
 # Render the content using Streamlit markdown
 st.title("ПОНИМАНИЕ ОСОБЕННОСТЕЙ СЕТЕВОГО ТРАФИКА")
