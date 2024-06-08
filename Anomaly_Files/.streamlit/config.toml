@@ -3,4 +3,5 @@ showErrorDetails = false
 
 [theme]
 primaryColor = "#F63366"
-backgroundColor = "white"
+backgroundColor = "black"
+base="light"
