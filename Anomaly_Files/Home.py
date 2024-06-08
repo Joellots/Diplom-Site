@@ -236,23 +236,23 @@ if authentication_status:
             if str(prediction[0]) in cd.attack_class['DoS']:
                 st.error(f"""Обнаружена атака типа: {prediction[0].upper()}; 
                             Тип атаки: Отказ в обслуживании (DOS)""")
-                autoplay_audio("beep_warning.mp3")
+                autoplay_audio(os.path.join(current_dir,"beep_warning.mp3"))
                 remove_audio()
             elif str(prediction[0]) in cd.attack_class['Probe']:
                 st.warning(f"""Обнаружена атака типа: {prediction[0].upper()}; 
                             Тип атаки: Проникновение (Probe)""")
                 remove_audio()
-                autoplay_audio("beep_warning.mp3")
+                autoplay_audio(os.path.join(current_dir,"beep_warning.mp3"))
                 remove_audio()
             elif str(prediction[0]) in cd.attack_class['R2L']:
                 st.warning(f"""Обнаружена атака типа: {prediction[0].upper()}; 
                             Тип атаки: Удаленный доступ к локальному (R2L)""")
-                autoplay_audio("beep_warning.mp3")
+                autoplay_audio(os.path.join(current_dir,"beep_warning.mp3"))
                 remove_audio()
             elif str(prediction[0]) in cd.attack_class['U2R']:
                 st.error(f"""Обнаружена атака типа: {prediction[0].upper()}; 
                             Тип атаки: Локальный доступ к Root (U2R)""")
-                autoplay_audio("beep_warning.mp3")
+                autoplay_audio(os.path.join(current_dir,"beep_warning.mp3"))
                 remove_audio()
 
     # Display the image
