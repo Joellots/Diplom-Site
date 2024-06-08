@@ -22,7 +22,7 @@ import col_definition as cd
 st.set_page_config(page_title="ОБНАРУЖЕНИЕ СЕТЕВЫХ АНОМАЛИЙ", page_icon=":guardsman:", layout="centered")
 
 # Function to get credentials from Firebase
-@st.cache_data(ttl=600)
+# @st.cache_data(ttl=600)
 def get_creds(db):
     cred_ref = db.collection("credentials")
     usernames_ref = cred_ref.document('usernames').collections()
