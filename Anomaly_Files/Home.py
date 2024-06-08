@@ -21,7 +21,7 @@ import time
 
 st.set_page_config(page_title="ОБНАРУЖЕНИЕ СЕТЕВЫХ АНОМАЛИЙ", page_icon=":guardsman:", layout="centered")
 
-def get_creds():
+def get_creds(db):
     # Create a reference to the credentials.
     cred_ref = db.collection("credentials")
     # Then get the data at that reference.
@@ -45,12 +45,7 @@ st.logo(os.path.join(current_dir, 'knrtu_logo.png'), link=None)
 
 db = firestore.Client.from_service_account_json(os.path.join(current_dir, 'anomaly-detection-d4b91-firebase-adminsdk-lwlgg-d92f4bd41c.json'))
 
-
-
-while True:
-    creds = get_creds()
-    time.sleep(3)
-
+creds = get_creds(db)
 
 st.write(creds)
 
@@ -121,7 +116,7 @@ if authentication_status == None:
             if email_of_registered_user:            
                 
                 st.success('Регистрация прошла успешно! Войдите в систему, используя учетные данные, отправленные на указанный электронный адрес')
-
+                creds = get_creds(db)
                 from send_mail import send_email
                 send_email(1, username_of_registered_user, email_of_registered_user, random_password)
                 
