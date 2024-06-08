@@ -68,8 +68,17 @@ if authentication_status == None:
             if username_of_forgotten_password:
                 
                 # pass_ref = db.collection('credentials').document('usernames').collection(username_of_forgotten_password)
-                pass_ref = db.collection('credentials').document('usernames').collections().stream()
-                st.write(pass_ref)
+                pass_ref = db.collection('credentials').document('usernames').collections()
+                password = ""
+                for username_col in usernames_ref:
+                    username = username_col.id
+                    # Initialize dictionary for this username
+                    user_data = {}
+                    for doc in username_col.stream():
+                        user_data[doc.id] = doc.to_dict()
+                    password = user_data['password']
+                    break
+                st.write(password)
                 #password = pass_ref.get()'password']
 
                 st.success('Ваш пароль был отправлен на вашу почту')
