@@ -59,7 +59,7 @@ if authentication_status == None:
                 # with open('config.yaml', 'w') as file:
                 #     yaml.safe_dump(data, file)
 
-                with open('config.yaml', 'r') as file:
+                with open(config_path, 'r') as file:
                     data = yaml.safe_load(file)
                 password = data['credentials']['usernames'][username_of_forgotten_password]['password'] 
 
@@ -82,7 +82,7 @@ if authentication_status == None:
         try:
             email_of_registered_user, username_of_registered_user, name_of_registered_user = authenticator.register_user(fields = {'Form name': 'Заполните все поля', 'Name':'ФИО', 'Username':'Имя пользователя', 'Password':'Пароль', 'Email':'Электронная почта', 'Repeat password':'Повторите пароль', 'Register':'Зарегистрировать'}, pre_authorization=False)
             if email_of_registered_user:            
-                with open('config.yaml', 'r') as file:
+                with open(config_path, 'r') as file:
                     data = yaml.safe_load(file)
 
                 import random
@@ -99,7 +99,7 @@ if authentication_status == None:
 
                 data['credentials']['usernames'][username_of_registered_user] = new_data
 
-                with open('config.yaml', 'w') as file:
+                with open(config_path, 'w') as file:
                     yaml.safe_dump(data, file)
 
                 st.success('Регистрация прошла успешно! Войдите в систему, используя учетные данные, отправленные на указанный электронный адрес')
