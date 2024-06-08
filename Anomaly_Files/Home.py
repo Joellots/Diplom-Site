@@ -108,6 +108,7 @@ if authentication_status == None:
                 'email': email_of_registered_user,
                 'password': random_password,
                 'word': random_password,
+                'uid': username_of_registered_user
             })
             if email_of_registered_user:            
                 
