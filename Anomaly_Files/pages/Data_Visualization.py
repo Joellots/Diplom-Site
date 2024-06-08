@@ -87,8 +87,8 @@ st.logo(os.path.join(current_dir, 'knrtu_logo.png'), link=None, icon_image="knrt
 # Sample DataFrame (Replace this with actual data loading)
 st.cache_data
 def load_data():
-    raw_df_1 = pd.read_csv('../data/Train.txt', header=None, names=cd.columns)
-    raw_df_2 = pd.read_csv('../data/Test.txt', header=None, names=cd.columns)
+    raw_df_1 = pd.read_csv(os.path.join(current_dir, 'Train.txt'), header=None, names=cd.columns)
+    raw_df_2 = pd.read_csv(os.path.join(current_dir, 'Test.txt'), header=None, names=cd.columns)
     raw_df = pd.concat([raw_df_2, raw_df_1])
     return raw_df
 
