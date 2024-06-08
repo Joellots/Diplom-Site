@@ -10,6 +10,7 @@ import pickle
 import streamlit_authenticator as stauth
 import yaml
 from yaml.loader import SafeLoader
+import os
 
 st.set_page_config(page_title="ОБНАРУЖЕНИЕ СЕТЕВЫХ АНОМАЛИЙ", page_icon=":guardsman:", layout="centered")
 
@@ -21,7 +22,9 @@ st.set_page_config(page_title="ОБНАРУЖЕНИЕ СЕТЕВЫХ АНОМА�
 # with file_path.open('rb') as file:
 #     hashed_passwords = pickle.load(file)
 
-with open('Joellots/Diplom-Site/Anomaly_Files/config.yaml') as file:
+config_path = os.path.join('.', 'config.yaml')
+
+with open(config_path) as file:
     config = yaml.load(file, Loader=SafeLoader)
 
 authenticator = stauth.Authenticate(
