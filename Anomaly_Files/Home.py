@@ -40,7 +40,7 @@ cred_ref = db.collection("credentials")
 creds = cred_ref.get()
 creds_dict = {} 
 
-for doc in saved_creds:
+for doc in creds:
         creds_dict[doc.id] = doc.to_dict()
 # creds_dict = copy_nested_dict(creds)
 
