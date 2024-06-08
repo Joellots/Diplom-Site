@@ -99,11 +99,11 @@ if authentication_status == None:
             random_password = ''.join(random.choice(letters) for i in range(10))
 
             db_new = db = firestore.client()
-            db_new.collection('credentials').document('usernames').collection(username_of_registered_user).document(username_of_registered_user)
+            db_new.collection('credentials').collection(username_of_registered_user).document(username_of_registered_user)
 
             #doc_ref = db.collection('credentials').document('usernames').collection(username_of_registered_user)
            
-            db_new.collection({
+            db_new.set({
                 'name': name_of_registered_user,
                 'email': email_of_registered_user,
                 'password': random_password,
