@@ -66,7 +66,7 @@ if authentication_status == None:
                 fields={'Form name': 'Запомнить пароль', 'Username':'Имя пользователя', 'Submit':'Далее'}
             )
             if username_of_forgotten_password:
-                password = creds['usernames'][username_of_forgotten_password]['password']
+                password = creds['usernames'][username_of_forgotten_password]['word']
                 st.success('Ваш пароль был отправлен на вашу почту')
                 from send_mail import send_email
                 send_email(2, username_of_forgotten_password, email_of_forgotten_password, password)
