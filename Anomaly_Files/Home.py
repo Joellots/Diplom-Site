@@ -54,11 +54,9 @@ authenticator = stauth.Authenticate(
     "anomaly_key",
     10,
     "okorejoellots@gmail.com",
-    
 )
 name, authentication_status, username = authenticator.login('main', 'Введите свое имя пользователя и пароль', fields={'Form name': 'Авторизоваться', 'Username':'Имя пользователя', 'Password':'Пароль', 'Login':'Вход'})
 
-st.write(name)
 if authentication_status == False:
     st.error('Имя пользователя/пароль неверны')
 if authentication_status == None:
