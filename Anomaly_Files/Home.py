@@ -34,10 +34,8 @@ config = json.dumps(saved_creds.collection('credentials').to_dict())
 
 
 authenticator = stauth.Authenticate(
-    config['name'],
-    config['key'],
-    config['expiry_days'],
-    config['preauthorized']
+    config['uid'],
+    config['email'],
 )
 name, authentication_status, username = authenticator.login('main', 'Введите свое имя пользователя и пароль', fields={'Form name': 'Авторизоваться', 'Username':'Имя пользователя', 'Password':'Пароль', 'Login':'Вход'})
 
