@@ -57,7 +57,7 @@ name, authentication_status, username = authenticator.login(
 
 if authentication_status == False:
     st.error('Имя пользователя/пароль неверны')
-elif authentication_status == None:
+if authentication_status == None:
     st.warning('Пожалуйста, введите имя пользователя и пароль')
 
     with st.expander("Забыли пароль?"):
@@ -70,7 +70,7 @@ elif authentication_status == None:
                 st.success('Ваш пароль был отправлен на вашу почту')
                 from send_mail import send_email
                 send_email(2, username_of_forgotten_password, email_of_forgotten_password, password)
-            else:
+            if username_of_forgotten_password:
                 st.error('Имя пользователя не найдено')
         except Exception as e:
             st.error(e)
