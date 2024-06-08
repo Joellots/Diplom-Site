@@ -45,7 +45,7 @@ for username_col in usernames_ref:
 st.write(creds)
 
 authenticator = stauth.Authenticate(
-    cred,
+    creds,
     "anomaly_cookie",
     "anomaly_key",
     10,
