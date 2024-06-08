@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Traffic Features</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: #333;
+        }
+
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Understanding Network Traffic Features</h1>
+
+    <h2>Total Features in Dataset:</h2>
+    <ol>
+        <li><strong>Duration:</strong> Length of time duration of the connection</li>
+        <li><strong>Protocol_type:</strong> Protocol used in the connection</li>
+        <li><strong>Service:</strong> Destination network service used</li>
+        <li><strong>Flag:</strong> Status of the connection – Normal or Error</li>
+        <li><strong>Src_bytes:</strong> Number of data bytes transferred from source to destination in a single
+            connection</li>
+        <li><strong>Dst_bytes:</strong> Number of data bytes transferred from destination to source in a single
+            connection</li>
+        <li><strong>Land:</strong> Whether source and destination IP addresses and port numbers are equal (1 if yes, 0
+            if no)</li>
+        <li><strong>Wrong_fragment:</strong> Total number of wrong fragments in this connection</li>
+        <li><strong>Urgent:</strong> Number of urgent packets in this connection. Urgent packets have the urgent bit
+            activated</li>
+        <!-- Add more features here -->
+    </ol>
+
+    <h2>Categories within Categorical Features:</h2>
+
+    <h3>Protocol Types:</h3>
+    <ul>
+        <li><strong>TCP:</strong> Transmission Control Protocol (connection-oriented)</li>
+        <li><strong>ICMP:</strong> Internet Control Message Protocol (diagnostic and error reporting)</li>
+        <li><strong>UDP:</strong> User Datagram Protocol (connectionless)</li>
+    </ul>
+
+    <h3>Service Types:</h3>
+    <ul>
+        <li><strong>Private:</strong> Custom or private network services</li>
+        <li><strong>FTP_data:</strong> File Transfer Protocol (data transfer)</li>
+        <li><strong>HTTP:</strong> Hypertext Transfer Protocol (web communication)</li>
+        <!-- Add more service types here -->
+    </ul>
+
+    <h3>Flag Types:</h3>
+    <ul>
+        <li><strong>REJ:</strong> Connection request rejected</li>
+        <li><strong>SF:</strong> Connection successfully established and completed</li>
+        <li><strong>RSTO:</strong> Connection reset by the destination</li>
+        <li><strong>S0:</strong> No response from destination (stealth scan)</li>
+        <li><strong>SH:</strong> Connection shut down</li>
+        <!-- Add more flag types here -->
+    </ul>
+
+</body>
+
+</html>
