@@ -63,3 +63,4 @@ validators==0.22.0
 watchdog==4.0.0
 zipp==3.17.0
 firebase_admin==6.5.0
+google.cloud==0.34.0
