@@ -39,15 +39,12 @@ for doc in saved_creds:
 # Convert Firestore documents to the format expected by stauth.Authenticate
 config = {
     'credentials': {
-        'usernames': creds_dict
+        'usernames': creds_dict,
     }
 }
-config = json.dumps(saved_creds.get().to_dict())
-
 
 authenticator = stauth.Authenticate(
-    config['uid'],
-    config['email'],
+    config['credentials']['usernames'],
 )
 name, authentication_status, username = authenticator.login('main', 'Введите свое имя пользователя и пароль', fields={'Form name': 'Авторизоваться', 'Username':'Имя пользователя', 'Password':'Пароль', 'Login':'Вход'})
 
@@ -104,10 +101,8 @@ if authentication_status == None:
 
             user = auth.create_user(
                 email=email_of_registered_user,
-                email_verified=False,
                 password=random_string,
                 display_name=name_of_registered_user,
-                disabled=False, 
                 uid=username_of_registered_user,
             )
             if email_of_registered_user:            
