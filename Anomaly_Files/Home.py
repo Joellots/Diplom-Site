@@ -39,8 +39,6 @@ authenticator = stauth.Authenticate(
 )
 name, authentication_status, username = authenticator.login('main', 'Введите свое имя пользователя и пароль', fields={'Form name': 'Авторизоваться', 'Username':'Имя пользователя', 'Password':'Пароль', 'Login':'Вход'})
 
-try:
-    user = auth.get_user_by_username(
 
 if authentication_status == False:
     st.error('Имя пользователя/пароль неверны')
