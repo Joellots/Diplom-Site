@@ -89,7 +89,7 @@ st.logo(os.path.join(parent_directory, 'knrtu_logo.png'), link=None)
 
 
 # Sample DataFrame (Replace this with actual data loading)
-st.cache_data
+@st.cache_data
 def load_data():
     raw_df_1 = pd.read_csv(os.path.join(parent_directory, 'Train.txt'), header=None, names=cd.columns)
     raw_df_2 = pd.read_csv(os.path.join(parent_directory, 'Test.txt'), header=None, names=cd.columns)
