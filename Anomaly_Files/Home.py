@@ -42,7 +42,6 @@ for username_col in usernames_ref:
         user_data[doc.id] = doc.to_dict()
     creds['usernames'] = user_data
 
-st.write(creds)
 
 authenticator = stauth.Authenticate(
     creds,
