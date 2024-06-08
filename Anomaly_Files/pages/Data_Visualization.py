@@ -82,7 +82,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.logo(os.path.join(current_dir, 'knrtu_logo.png'), link=None, icon_image="knrtu_logo.png")
+st.logo(os.path.join(current_dir, 'knrtu_logo.png'), link=None)
 
 
 # Sample DataFrame (Replace this with actual data loading)
