@@ -68,6 +68,8 @@ if authentication_status == None:
             if username_of_forgotten_password:
                 
                 password = creds['usernames'][username_of_forgotten_password]['password']
+                st.write(creds)
+                st.write(username_of_forgotten_password)
                 st.write(password)
                 #password = pass_ref.get()'password']
 
