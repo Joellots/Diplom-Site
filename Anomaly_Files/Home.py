@@ -151,7 +151,7 @@ if authentication_status:
     # Apply custom CSS styles
     st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
-    st.logo("knrtu_logo.png", link=None)
+    st.logo(os.path.join(current_dir, 'knrtu_logo.png'), link=None)
 
     # Load Data
     df = load_data()
