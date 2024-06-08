@@ -98,8 +98,10 @@ if authentication_status == None:
             letters = string.ascii_letters  # This includes both lowercase and uppercase letters
             random_password = ''.join(random.choice(letters) for i in range(10))
 
-            doc_ref = db.collection('credentials').document('usernames').collection(username_of_forgotten_password)
-            doc_ref.add({
+            
+            doc_ref = db.collection('credentials').document('usernames').add(username_of_forgotten_password)
+            ref = db.collection('credentials').document('usernames').collection(username_of_forgotten_password)
+            ref.add({
                 'name': name_of_registered_user,
                 'email': email_of_registered_user,
                 'password': random_password,
