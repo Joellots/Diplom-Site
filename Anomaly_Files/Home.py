@@ -67,18 +67,7 @@ if authentication_status == None:
         
             if username_of_forgotten_password:
                 
-                # pass_ref = db.collection('credentials').document('usernames').collection(username_of_forgotten_password)
-                pass_ref = db.collection('credentials').document('usernames').collections()
-                password = ""
-                for username_col in usernames_ref:
-                    username = username_col.id
-                    # Initialize dictionary for this username
-                    user_data = {}
-                    for doc in username_col.stream():
-                        user_data[doc.id] = doc.to_dict()
-                    password = user_data[username_of_forgotten_password]['password']
-                    st.write(user_data)
-                    break
+                password = creds['usernames'][username_of_forgotten_password]['password']
                 st.write(password)
                 #password = pass_ref.get()'password']
 
