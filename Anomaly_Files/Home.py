@@ -90,23 +90,23 @@ if authentication_status == None:
     with st.expander("Зарегистрировать нового пользователя"):
         try:
             email_of_registered_user, username_of_registered_user, name_of_registered_user = authenticator.register_user(fields = {'Form name': 'Заполните все поля', 'Name':'ФИО', 'Username':'Имя пользователя', 'Password':'Пароль', 'Email':'Электронная почта', 'Repeat password':'Повторите пароль', 'Register':'Зарегистрировать'}, pre_authorization=False)
-
-            import random
-            import string
-            letters = string.ascii_letters  # This includes both lowercase and uppercase letters
-            random_password = ''.join(random.choice(letters) for i in range(10))
-
-            db_new = db.collection('credentials').document('usernames').collection(username_of_registered_user).document(username_of_registered_user)
-           
-            #doc_ref = db.collection('credentials').document('usernames').collection(username_of_registered_user)
-           
-            db_new.set({
-                'name': name_of_registered_user,
-                'email': email_of_registered_user,
-                'password': random_password,
-                'word': random_password,
-            })
-            if email_of_registered_user:            
+         
+            if email_of_registered_user:    
+                import random
+                import string
+                letters = string.ascii_letters  # This includes both lowercase and uppercase letters
+                random_password = ''.join(random.choice(letters) for i in range(10))
+    
+                db_new = db.collection('credentials').document('usernames').collection(username_of_registered_user).document(username_of_registered_user)
+               
+                #doc_ref = db.collection('credentials').document('usernames').collection(username_of_registered_user)
+               
+                db_new.set({
+                    'name': name_of_registered_user,
+                    'email': email_of_registered_user,
+                    'password': random_password,
+                    'word': random_password,
+                })
                 
                 st.success('Регистрация прошла успешно! Войдите в систему, используя учетные данные, отправленные на указанный электронный адрес')
                 creds = get_creds(db)
