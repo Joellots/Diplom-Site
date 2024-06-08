@@ -45,9 +45,7 @@ body {
     color: #333; /* Set text color */
 }
 
-h1, h2, h3 {
-    color: #333; /* Set heading color */
-}
+
 
 .sidebar .sidebar-content {
     background-color: #ffffff; /* Set sidebar background color */
