@@ -30,7 +30,7 @@ db = firestore.Client.from_service_account_json(os.path.join(current_dir, 'anoma
 # Create a reference to the credentials.
 cred_ref = db.collection("credentials")
 # Then get the data at that reference.
-cred = doc_ref.get()
+cred = cred_ref.get()
 
 creds_dict = {}
 for doc in saved_creds:
