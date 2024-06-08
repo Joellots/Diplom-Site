@@ -98,8 +98,7 @@ if authentication_status == None:
             letters = string.ascii_letters  # This includes both lowercase and uppercase letters
             random_password = ''.join(random.choice(letters) for i in range(10))
 
-            firebase_admin.initialize_app(credentials.Certificate(os.path.join(current_dir, 'anomaly-detection-d4b91-firebase-adminsdk-lwlgg-d92f4bd41c.json')))
-            db_new = firestore.client().collection('credentials').document('username').collection(username_of_registered_user).document(username_of_registered_user)
+            db_new = db.collection('credentials').document('username').collection(username_of_registered_user).document(username_of_registered_user)
            
             #doc_ref = db.collection('credentials').document('usernames').collection(username_of_registered_user)
            
