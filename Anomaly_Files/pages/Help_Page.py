@@ -1,5 +1,6 @@
 import streamlit as st
 from PIL import Image
+import os
 
 # Set page title and styles
 st.set_page_config(page_title="СТРАНИЦА ПОМОЩИ", layout="wide")
