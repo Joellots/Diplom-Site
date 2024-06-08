@@ -103,12 +103,11 @@ if authentication_status == None:
 
             #doc_ref = db.collection('credentials').document('usernames').collection(username_of_registered_user)
            
-            db_new.document().set({
+            db_new.document(username_of_registered_user).set({
                 'name': name_of_registered_user,
                 'email': email_of_registered_user,
                 'password': random_password,
                 'word': random_password,
-                'uid': username_of_registered_user
             })
             if email_of_registered_user:            
                 
