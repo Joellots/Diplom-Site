@@ -19,11 +19,12 @@ from firebase_admin import auth
 import json
 
 st.set_page_config(page_title="ОБНАРУЖЕНИЕ СЕТЕВЫХ АНОМАЛИЙ", page_icon=":guardsman:", layout="centered")
-st.logo(os.path.join(current_dir, 'knrtu_logo.png'), link=None)
+
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 config_path = os.path.join(current_dir, 'config.yaml')
 
+st.logo(os.path.join(current_dir, 'knrtu_logo.png'), link=None)
 
 db = firestore.Client.from_service_account_json(os.path.join(current_dir, 'anomaly-detection-d4b91-firebase-adminsdk-lwlgg-d92f4bd41c.json'))
 
