@@ -84,7 +84,7 @@ st.markdown(
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 # Get the parent directory
-parent_directory = os.path.abspath(os.path.join(current_directory, os.pardir))
+parent_directory = os.path.abspath(os.path.join(current_dir, os.pardir))
 st.logo(os.path.join(parent_directory, 'knrtu_logo.png'), link=None)
 
 
