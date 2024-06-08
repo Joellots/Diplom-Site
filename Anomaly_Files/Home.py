@@ -25,10 +25,10 @@ config_path = os.path.join(current_dir, 'config.yaml')
 
 
 cred = credentials.Certificate(os.path.join(current_dir, 'diplom-site-1adda-ad818bf284ff.json'))
-try:
-    firebase_admin.initialize_app(cred)
-except:
-    pass
+# try:
+#     firebase_admin.initialize_app(cred)
+# except:
+#     pass
 db = firestore.client()
 
 saved_creds = doc_ref = db.collection('credentials')
