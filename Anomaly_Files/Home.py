@@ -12,24 +12,37 @@ import yaml
 from yaml.loader import SafeLoader
 import os
 
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import auth
+import json
+
 st.set_page_config(page_title="ОБНАРУЖЕНИЕ СЕТЕВЫХ АНОМАЛИЙ", page_icon=":guardsman:", layout="centered")
 
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 config_path = os.path.join(current_dir, 'config.yaml')
 
-with open(config_path) as file:
-    config = yaml.load(file, Loader=SafeLoader)
+
+cred = credentials(os.path.join(current_dir, 'diplom-site-1adda-ad818bf284ff.json'))
+firebase_admin.initialize_app(cred)
+db = firestore.client()
+
+saved_creds = doc_ref = db.collection('credentials')
+print(saved_creds)
+config = json.dumps(saved_creds.collection('credentials').to_dict())
+
 
 authenticator = stauth.Authenticate(
-    config['credentials'],
-    config['cookie']['name'],
-    config['cookie']['key'],
-    config['cookie']['expiry_days'],
+    config['name'],
+    config['key'],
+    config['expiry_days'],
     config['preauthorized']
 )
 name, authentication_status, username = authenticator.login('main', 'Введите свое имя пользователя и пароль', fields={'Form name': 'Авторизоваться', 'Username':'Имя пользователя', 'Password':'Пароль', 'Login':'Вход'})
 
+try:
+    user = auth.get_user_by_username(
 
 if authentication_status == False:
     st.error('Имя пользователя/пароль неверны')
@@ -54,7 +67,8 @@ if authentication_status == None:
 
                 with open(config_path, 'r') as file:
                     data = yaml.safe_load(file)
-                password = data['credentials']['usernames'][username_of_forgotten_password]['password'] 
+                pass_ref = db.collection('credentials').document('password')
+                password = pass_ref.get()
 
                 st.success('Ваш пароль был отправлен на вашу почту')
 
@@ -74,15 +88,23 @@ if authentication_status == None:
     with st.expander("Зарегистрировать нового пользователя"):
         try:
             email_of_registered_user, username_of_registered_user, name_of_registered_user = authenticator.register_user(fields = {'Form name': 'Заполните все поля', 'Name':'ФИО', 'Username':'Имя пользователя', 'Password':'Пароль', 'Email':'Электронная почта', 'Repeat password':'Повторите пароль', 'Register':'Зарегистрировать'}, pre_authorization=False)
+
+            import random
+            import string
+            letters = string.ascii_letters  # This includes both lowercase and uppercase letters
+            random_string = ''.join(random.choice(letters) for i in range(10))
+
+            user = auth.create_user(
+                email=email_of_registered_user,
+                email_verified=False,
+                password=random_string,
+                display_name=name_of_registered_user,
+                disabled=False, 
+                uid=username_of_registered_user,
+            )
             if email_of_registered_user:            
                 with open(config_path, 'r') as file:
                     data = yaml.safe_load(file)
-
-                import random
-                import string
-
-                letters = string.ascii_letters  # This includes both lowercase and uppercase letters
-                random_string = ''.join(random.choice(letters) for i in range(8))
 
                 new_data = {
                         'email': email_of_registered_user,
