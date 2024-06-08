@@ -24,13 +24,6 @@ st.set_page_config(page_title="ОБНАРУЖЕНИЕ СЕТЕВЫХ АНОМА�
 current_dir = os.path.dirname(os.path.abspath(__file__))
 config_path = os.path.join(current_dir, 'config.yaml')
 
-## Function for getting credentials from DB
-def copy_nested_dict(original_dict):
-    new_dict = {}
-    for username, user_info in original_dict['usernames'].items():
-        new_dict[username] = user_info.copy()
-    return new_dict
-
 
 db = firestore.Client.from_service_account_json(os.path.join(current_dir, 'anomaly-detection-d4b91-firebase-adminsdk-lwlgg-d92f4bd41c.json'))
 
@@ -58,10 +51,11 @@ config = {
 }
 
 authenticator = stauth.Authenticate(
-    config['credentials'],
-    config['credentials'][name],
-    config['credentials'][name]['key'],
-    config['credentials'][name]['expiry'],
+    cred,
+    "anomaly_cookie",
+    "anomaly_key",
+    10,
+    "okorejoellots@gmail.com",
     
 )
 name, authentication_status, username = authenticator.login('main', 'Введите свое имя пользователя и пароль', fields={'Form name': 'Авторизоваться', 'Username':'Имя пользователя', 'Password':'Пароль', 'Login':'Вход'})
@@ -90,7 +84,7 @@ if authentication_status == None:
 
                 # with open(config_path, 'r') as file:
                 #     data = yaml.safe_load(file)
-                pass_ref = db.collection('credentials').document(username_of_forgotten_password)
+                pass_ref = db.collection('credentials').document('usernames').collection(username_of_forgotten_password)
                 password = pass_ref.get()['password']
 
                 st.success('Ваш пароль был отправлен на вашу почту')
@@ -118,13 +112,11 @@ if authentication_status == None:
             random_password = ''.join(random.choice(letters) for i in range(10))
             random_key = ''.join(random.choice(letters) for i in range(10))
 
-            doc_ref = db.collection('users').document('user_id')
+            doc_ref = db.collection('credentials').document('usernames').collection(username_of_forgotten_password)
             doc_ref.set({
                 'name': name_of_registered_user,
                 'email': email_of_registered_user,
-                'key': random_key,
                 'password': random_password,
-                'expiry': 10,
             })
             if email_of_registered_user:            
                 
