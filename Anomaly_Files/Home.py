@@ -119,11 +119,11 @@ if authentication_status:
         font-family: Arial, sans-serif;
         line-height: 1.6;
         padding: 20px;
-        color: #333; /* Set text color */
+       
     }
 
     h1, h2, h3 {
-        color: #333; /* Set heading color */
+        
     }
 
     .sidebar .sidebar-content {
