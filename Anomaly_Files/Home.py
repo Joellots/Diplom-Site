@@ -103,7 +103,6 @@ if authentication_status == None:
             import string
             letters = string.ascii_letters  # This includes both lowercase and uppercase letters
             random_password = ''.join(random.choice(letters) for i in range(10))
-            random_key = ''.join(random.choice(letters) for i in range(10))
 
             doc_ref = db.collection('credentials').document('usernames').collection(username_of_forgotten_password)
             doc_ref.set({
@@ -116,7 +115,7 @@ if authentication_status == None:
                 st.success('Регистрация прошла успешно! Войдите в систему, используя учетные данные, отправленные на указанный электронный адрес')
 
                 from send_mail import send_email
-                send_email(1, username_of_registered_user, email_of_registered_user, random_string)
+                send_email(1, username_of_registered_user, email_of_registered_user, random_password)
                 
         except Exception as e:
             st.error(e)
