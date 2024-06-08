@@ -25,11 +25,21 @@ config_path = os.path.join(current_dir, 'config.yaml')
 
 
 cred = credentials.Certificate(os.path.join(current_dir, 'diplom-site-1adda-ad818bf284ff.json'))
-#firebase_admin.initialize_app(cred)
+firebase_admin.initialize_app(cred)
 db = firestore.client()
 
-saved_creds =  db.collection('credentials')
+saved_creds =  db.collection('credentials').get()
 print(saved_creds)
+creds_dict = {}
+for doc in saved_creds:
+    creds_dict[doc.id] = doc.to_dict()
+
+# Convert Firestore documents to the format expected by stauth.Authenticate
+config = {
+    'credentials': {
+        'usernames': creds_dict
+    }
+}
 config = json.dumps(saved_creds.get().to_dict())
 
 
@@ -99,20 +109,7 @@ if authentication_status == None:
                 uid=username_of_registered_user,
             )
             if email_of_registered_user:            
-                with open(config_path, 'r') as file:
-                    data = yaml.safe_load(file)
-
-                new_data = {
-                        'email': email_of_registered_user,
-                        'name': name_of_registered_user,
-                        'password': random_string,
-                    }
-
-                data['credentials']['usernames'][username_of_registered_user] = new_data
-
-                with open(config_path, 'w') as file:
-                    yaml.safe_dump(data, file)
-
+                
                 st.success('Регистрация прошла успешно! Войдите в систему, используя учетные данные, отправленные на указанный электронный адрес')
 
                 from send_mail import send_email
