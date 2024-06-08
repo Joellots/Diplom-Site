@@ -67,7 +67,7 @@ if authentication_status == None:
             username_of_forgotten_password, email_of_forgotten_password, new_random_password = authenticator.forgot_password(
                 fields={'Form name': 'Запомнить пароль', 'Username':'Имя пользователя', 'Submit':'Далее'}
             )
-            if email_of_forgotten_password not None:
+            
             if email_of_forgotten_password:
                 password = creds['usernames'][username_of_forgotten_password]['word']
                 st.success('Ваш пароль был отправлен на вашу почту')
