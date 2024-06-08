@@ -102,7 +102,7 @@ if authentication_status == None:
             db_new.collection('credentials').document('usernames').collection(username_of_registered_user)
 
             #doc_ref = db.collection('credentials').document('usernames').collection(username_of_registered_user)
-            st.write(db_new)
+           
             db_new.document().set({
                 'name': name_of_registered_user,
                 'email': email_of_registered_user,
