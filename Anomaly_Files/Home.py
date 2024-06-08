@@ -47,7 +47,7 @@ for username_col in usernames_ref:
     # Fetch email and name for this username
     for doc in username_col.stream():
         user_data[doc.id] = doc.to_dict()
-    creds['username'] = user_data
+    creds['usernames'] = user_data
 
 st.write(creds)
 # Convert Firestore documents to the format expected by stauth.Authenticate
