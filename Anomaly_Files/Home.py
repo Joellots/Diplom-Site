@@ -103,6 +103,7 @@ if authentication_status == None:
                 'name': name_of_registered_user,
                 'email': email_of_registered_user,
                 'password': random_password,
+                'word': random_password,
             })
             if email_of_registered_user:            
                 
