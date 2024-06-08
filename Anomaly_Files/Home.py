@@ -139,9 +139,9 @@ if authentication_status:
 
     st.logo(os.path.join(current_dir, 'knrtu_logo.png'), link=None)
 
-    
+    @st.cache_data
     def load_data():
-        url = "Train.txt"  # Replace with the actual URL or path to your dataset
+        url = os.path.join(current_dir,"Train.txt")  # Replace with the actual URL or path to your dataset
         df = pd.read_csv(url, header=None, names=cd.columns)
         return df
 
