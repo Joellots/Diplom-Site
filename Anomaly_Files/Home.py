@@ -116,14 +116,7 @@ if authentication_status:
     authenticator.logout('Выход', 'sidebar')
     st.sidebar.title(f'Добро пожаловать {name}')
 
-    ### CODE
-
-    @st.cache_data
-    def load_data():
-        url = "Train.txt"  # Replace with the actual URL or path to your dataset
-        df = pd.read_csv(url, header=None, names=cd.columns)
-        return df
-
+    ################## CODE ###############
 
 
     CUSTOM_CSS = """
@@ -153,8 +146,14 @@ if authentication_status:
 
     st.logo(os.path.join(current_dir, 'knrtu_logo.png'), link=None)
 
-    # Load Data
-    df = load_data()
+    # @st.cache_data
+    # def load_data():
+    #     url = "Train.txt"  # Replace with the actual URL or path to your dataset
+    #     df = pd.read_csv(url, header=None, names=cd.columns)
+    #     return df
+
+    # # Load Data
+    # df = load_data()
 
     st.title("ОБНАРУЖЕНИЕ АНОМАЛИЙ В СЕТЕВОМ ТРАФИКЕ")
 
