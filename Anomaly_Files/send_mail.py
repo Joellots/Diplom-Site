@@ -35,7 +35,7 @@ def send_email(choice, receiver_login, receiver_email, receiver_password):
         
         ===>>>-----------------------------------------------
         Ваш логин: {receiver_login}
-        Ваш новый пароль: {receiver_password}
+        Ваш пароль: {receiver_password}
         ===>>>-----------------------------------------------
 
         Если у вас возникнут какие-либо проблемы при входе в свою учетную запись, свяжитесь с нами по адресу okorejoellots@gmail.com.
