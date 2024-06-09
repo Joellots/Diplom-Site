@@ -11,6 +11,61 @@ st.set_page_config(page_title="ВИЗУАЛИЗАЦИЯ ДАННЫХ", page_icon
 current_dir = os.path.dirname(os.path.abspath(__file__))
 st.title('Визуализация Данных об Обнаружении Аномалий')
 
+current_dir = os.path.dirname(os.path.abspath(__file__))
+# Get the parent directory
+parent_directory = os.path.abspath(os.path.join(current_dir, os.pardir))
+st.logo(os.path.join(parent_directory, 'knrtu_logo.png'), link=None)
+
+
+# Sample DataFrame (Replace this with actual data loading)
+@st.cache_data
+def load_data():
+    raw_df_1 = pd.read_csv(os.path.join(parent_directory, 'Train.txt'), header=None, names=cd.columns)
+    raw_df_2 = pd.read_csv(os.path.join(parent_directory, 'Test.txt'), header=None, names=cd.columns)
+    raw_df = pd.concat([raw_df_2, raw_df_1])
+    return raw_df
+
+raw_df = load_data()
+
+numeric_cols = cd.numeric_cols
+
+st.sidebar.title('Выберите График')
+plot_type = st.sidebar.selectbox('Выберите тип графика:', ['Гистограмма', 'столбчатый график', 'Корреляционная тепловая карта'])
+
+if plot_type == 'Гистограмма':
+    selected_col = st.sidebar.selectbox('Выберите столбец:', numeric_cols)
+    if st.sidebar.button('Построить'):
+        fig, ax = plt.subplots()
+        ax.hist(raw_df[selected_col])
+        ax.set_xlabel(selected_col)
+        ax.set_ylabel('Frequency')
+        ax.set_title(f'Distribution of {selected_col}')
+        st.pyplot(fig)
+        
+
+elif plot_type == 'столбчатый график':
+    cat_cols = cd.categorical_cols
+    selected_col = st.sidebar.selectbox('Выберите столбец:', cat_cols)
+    plt.rcParams["figure.figsize"] = (28, 10)
+    if st.sidebar.button('Построить'):
+        fig, ax = plt.subplots()
+        ax.bar(raw_df[selected_col].value_counts().index, raw_df[selected_col].value_counts().values)
+        ax.set_xlabel(selected_col)
+        plt.xticks(rotation=45) 
+        ax.set_ylabel('Count')
+        ax.set_title(f'Distribution of {selected_col}')
+        st.pyplot(fig)
+
+elif plot_type == 'Корреляционная тепловая карта':
+    if st.sidebar.button('Построить'):
+        fig, ax = plt.subplots(figsize=(25, 20))
+        correlation_matrix = raw_df[numeric_cols].corr()
+        sns.heatmap(correlation_matrix, annot=True, fmt=".2f", cmap="coolwarm", ax=ax)
+        ax.set_title('Correlation Heatmap')
+        st.pyplot(fig)
+        
+
+
 st.markdown("""
     **Визуализация данных является важным этапом в процессе машинного обучения. Она позволяет исследовать и интерпретировать данные, выявлять скрытые закономерности и аномалии, а также представлять результаты моделей машинного обучения в наглядной и понятной форме.**
 
@@ -80,56 +135,3 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-# Get the parent directory
-parent_directory = os.path.abspath(os.path.join(current_dir, os.pardir))
-st.logo(os.path.join(parent_directory, 'knrtu_logo.png'), link=None)
-
-
-# Sample DataFrame (Replace this with actual data loading)
-@st.cache_data
-def load_data():
-    raw_df_1 = pd.read_csv(os.path.join(parent_directory, 'Train.txt'), header=None, names=cd.columns)
-    raw_df_2 = pd.read_csv(os.path.join(parent_directory, 'Test.txt'), header=None, names=cd.columns)
-    raw_df = pd.concat([raw_df_2, raw_df_1])
-    return raw_df
-
-raw_df = load_data()
-
-numeric_cols = cd.numeric_cols
-
-st.sidebar.title('Выберите График')
-plot_type = st.sidebar.selectbox('Выберите тип графика:', ['Гистограмма', 'столбчатый график', 'Корреляционная тепловая карта'])
-
-if plot_type == 'Гистограмма':
-    selected_col = st.sidebar.selectbox('Выберите столбец:', numeric_cols)
-    if st.sidebar.button('Построить'):
-        fig, ax = plt.subplots()
-        ax.hist(raw_df[selected_col])
-        ax.set_xlabel(selected_col)
-        ax.set_ylabel('Frequency')
-        ax.set_title(f'Distribution of {selected_col}')
-        st.pyplot(fig)
-        
-
-elif plot_type == 'столбчатый график':
-    cat_cols = cd.categorical_cols
-    selected_col = st.sidebar.selectbox('Выберите столбец:', cat_cols)
-    plt.rcParams["figure.figsize"] = (28, 10)
-    if st.sidebar.button('Построить'):
-        fig, ax = plt.subplots()
-        ax.bar(raw_df[selected_col].value_counts().index, raw_df[selected_col].value_counts().values)
-        ax.set_xlabel(selected_col)
-        plt.xticks(rotation=45) 
-        ax.set_ylabel('Count')
-        ax.set_title(f'Distribution of {selected_col}')
-        st.pyplot(fig)
-
-elif plot_type == 'Корреляционная тепловая карта':
-    if st.sidebar.button('Построить'):
-        fig, ax = plt.subplots(figsize=(25, 20))
-        correlation_matrix = raw_df[numeric_cols].corr()
-        sns.heatmap(correlation_matrix, annot=True, fmt=".2f", cmap="coolwarm", ax=ax)
-        ax.set_title('Correlation Heatmap')
-        st.pyplot(fig)
-        
