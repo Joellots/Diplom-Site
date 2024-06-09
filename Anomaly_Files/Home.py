@@ -16,7 +16,7 @@ import firebase_admin
 from firebase_admin import credentials, auth
 import json
 
-import col_definition as cd
+
 
 # Set page configuration
 st.set_page_config(page_title="ОБНАРУЖЕНИЕ СЕТЕВЫХ АНОМАЛИЙ", page_icon=":guardsman:", layout="centered")
@@ -36,6 +36,8 @@ def get_creds(db):
 current_dir = os.path.dirname(os.path.abspath(__file__))
 config_path = os.path.join(current_dir, 'config.yaml')
 st.logo(os.path.join(current_dir, 'knrtu_logo.png'), link=None)
+
+import os.path.join(current_dir, "col_definition.py") as cd
 
 cred_path = os.path.join(current_dir, 'anomaly-detection-d4b91-firebase-adminsdk-lwlgg-d92f4bd41c.json')
 db = firestore.Client.from_service_account_json(cred_path)
