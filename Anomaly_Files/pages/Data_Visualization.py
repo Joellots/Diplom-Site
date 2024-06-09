@@ -36,7 +36,7 @@ if plot_type == 'Гистограмма':
     selected_col = st.sidebar.selectbox('Выберите столбец:', numeric_cols)
     plt.rcParams["figure.figsize"] = (18, 8)
     if st.sidebar.button('Построить'):
-        fig, ax = plt.subplots(figsize=(15, 10))
+        fig, ax = plt.subplots(figsize=(8, 8))
         ax.hist(raw_df[selected_col])
         ax.set_xlabel(selected_col)
         ax.set_ylabel('Frequency')
@@ -49,7 +49,7 @@ elif plot_type == 'столбчатый график':
     selected_col = st.sidebar.selectbox('Выберите столбец:', cat_cols)
     plt.rcParams["figure.figsize"] = (18, 8)
     if st.sidebar.button('Построить'):
-        fig, ax = plt.subplots(figsize=(15, 10))
+        fig, ax = plt.subplots(figsize=(8, 8))
         ax.bar(raw_df[selected_col].value_counts().index, raw_df[selected_col].value_counts().values)
         ax.set_xlabel(selected_col)
         plt.xticks(rotation=45) 
