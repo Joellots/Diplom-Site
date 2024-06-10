@@ -133,6 +133,8 @@ except:
         st.session_state['word'] = ''
     if 'email' not in st.session_state:
         st.session_state['email'] = ''
+    if 'logged_in' not in st.session_state:
+        st.session_state['logged_in'] = False
     name, authentication_status, username = authenticator.login(
       'main', 'Введите свое имя пользователя и пароль', 
       fields={'Form name': 'Авторизоваться', 'Username':'Имя пользователя', 'Password':'Пароль', 'Login':'Вход'})
