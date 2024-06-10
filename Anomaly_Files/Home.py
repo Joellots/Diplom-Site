@@ -16,6 +16,75 @@ import firebase_admin
 from firebase_admin import credentials, auth
 import json
 
+columns = ["duration","protocol_type","service","flag","src_bytes","dst_bytes","land","wrong_fragment","urgent","hot","num_failed_logins","logged_in","num_compromised","root_shell","su_attempted","num_root","num_file_creations","num_shells","num_access_files","num_outbound_cmds","is_host_login","is_guest_login","count","srv_count","serror_rate", "srv_serror_rate","rerror_rate","srv_rerror_rate","same_srv_rate", "diff_srv_rate", "srv_diff_host_rate","dst_host_count","dst_host_srv_count","dst_host_same_srv_rate","dst_host_diff_srv_rate","dst_host_same_src_port_rate","dst_host_srv_diff_host_rate","dst_host_serror_rate","dst_host_srv_serror_rate","dst_host_rerror_rate","dst_host_srv_rerror_rate","attack", "last_flag"]
+
+numeric_cols = ["duration","src_bytes","dst_bytes",
+"wrong_fragment","urgent","hot","num_failed_logins",
+"num_compromised","num_root","num_file_creations",
+"num_shells","num_access_files","num_outbound_cmds","count","srv_count","serror_rate", "srv_serror_rate",
+"rerror_rate","srv_rerror_rate","same_srv_rate", "diff_srv_rate", "srv_diff_host_rate","dst_host_count","dst_host_srv_count","dst_host_same_srv_rate",
+"dst_host_diff_srv_rate","dst_host_same_src_port_rate",
+"dst_host_srv_diff_host_rate","dst_host_serror_rate","dst_host_srv_serror_rate",
+"dst_host_rerror_rate","dst_host_srv_rerror_rate"]
+
+categorical_cols = ["protocol_type", "service", "flag"]
+
+binary_cols = ['land', 'logged_in', 'root_shell', 'su_attempted', 'is_host_login', 'is_guest_login']
+
+target_cols = ['attack']
+
+raw_selected_cols = ['land',
+ 'wrong_fragment',
+ 'logged_in',
+ 'serror_rate',
+ 'srv_serror_rate',
+ 'dst_host_same_src_port_rate',
+ 'dst_host_serror_rate',
+ 'dst_host_srv_serror_rate',
+ 'protocol_type',
+ 'service',
+ 'flag',
+ 'dst_host_same_srv_rate',
+ 'same_srv_rate',
+ 'dst_host_srv_diff_host_rate',
+ 'dst_host_srv_count',
+ 'srv_rerror_rate', 
+ 'dst_host_srv_rerror_rate',]
+
+attack_class = {
+    "DoS" : ['back', 'land', 'neptune', 'pod', 'smurf', 'teardrop', 'apache2', 'udpstorm', 'processtable', 'worm'],
+    "Probe" : ['satan', 'ipsweep', 'nmap', 'portsweep', 'mscan', 'saint'],
+    "R2L" : ['guess_passwd', 'ftp_write', 'imap', 'phf', 'multihop', 'warezmaster', 'warezclient', 'spy', 'xlock', 'xsnoop', 'snmpguess', 'snmpgetattack', 'httptunnel', 'sendmail', 'named'],
+    "U2R" : ['buffer_overflow', 'loadmodule', 'rootkit', 'perl', 'sqlattack', 'xterm', 'ps',]
+}
+
+my_attack = ['neptune','normal','smurf','ipsweep','back','nmap','warezclient','satan', 'portsweep', 'teardrop', 'guess_passwd', 'pod', 'rootkit', 'ftp_write', 'buffer_overflow', 'land', 'multihop', 'imap', 'loadmodule', 'perl', 'warezmaster', 'phf', 'spy']
+
+feature_map = {
+    'duration': 'DURATION',
+    'protocol_type': 'PROTOCOL TYPE (protocol_type)',
+    'service': 'SERVICE (service)',
+    'flag': 'FLAG (flag)',
+    'src_bytes': 'SOURCE BYTES',
+    'dst_bytes': 'DESTINATION BYTES',
+    'dst_host_same_src_port_rate': 'DESTINATION HOST SAME SERVICE PORT RATE',
+    'srv_count': 'SAME SERVICE COUNT',
+    'dst_host_rerror_rate' : 'DESTINATION HOST R-FLAG ERROR RATE',
+    
+    'dst_host_same_srv_rate': 'DESTINATION HOST SAME SERVICE RATE',
+    'dst_host_diff_srv_rate': 'DESTINATION HOST DIFFERENT SERVICE RATE',
+    'dst_host_srv_rerror_rate': 'DESTINATION HOST SERVICE R-FLAG ERROR RATE',
+    'same_srv_rate': 'SAME SERVICE RATE',
+    
+    'dst_host_srv_count': 'DESTINATION HOST SAME SERVICE COUNT',
+    'diff_srv_rate': 'DIFFERENT SERVICE RATE',
+    'count': 'COUNT',
+    'dst_host_srv_diff_host_rate': 'DESTINATION HOST SERVICE RATE FROM DIFFERENT HOST',
+    'dst_host_srv_serror_rate': 'DESTINATION HOST SERVICE S-FLAG ERROR RATE',
+    'dst_host_serror_rate': 'DESTINATION HOST S-FLAG ERROR RATE'
+    
+
+
 
 
 # Set page configuration
@@ -128,7 +197,7 @@ if authentication_status:
     @st.cache_data(ttl=600)
     def load_data():
         url = os.path.join(current_dir, "Train.txt")
-        return pd.read_csv(url, header=None, names=cd.columns)
+        return pd.read_csv(url, header=None, names=columns)
 
     df = load_data()
 
@@ -147,24 +216,24 @@ if authentication_status:
     encoded_cols = Forest_Map['encoded_cols']
 
     def nominal(col: str):
-        user_input[col] = st.sidebar.selectbox(cd.feature_map[col], df[col].unique())
+        user_input[col] = st.sidebar.selectbox(feature_map[col], df[col].unique())
 
     def binary(col: str):
-        user_input[col] = st.sidebar.selectbox(cd.feature_map[col], [0, 1])
+        user_input[col] = st.sidebar.selectbox(feature_map[col], [0, 1])
 
     def numeric(col: str):
-        user_input[col] = st.sidebar.text_input(cd.feature_map[col], f"", key=col, placeholder=col)
+        user_input[col] = st.sidebar.text_input(feature_map[col], f"", key=col, placeholder=col)
         try:
             user_input[col] = float(user_input[col])
         except ValueError:
             user_input[col] = df[col].mean()
 
     for item in KBestFeatures:
-        if item in cd.binary_cols:
+        if item in binary_cols:
             binary(item)
-        elif item in cd.numeric_cols:
+        elif item in numeric_cols:
             numeric(item)
-        elif item in cd.categorical_cols:
+        elif item in categorical_cols:
             nominal(item)
 
     input_df = pd.DataFrame([user_input], columns=KBestFeatures)
@@ -199,7 +268,7 @@ if authentication_status:
             }
     
             for key, (msg, display_func) in attack_msg.items():
-                if attack_type in cd.attack_class[key]:
+                if attack_type in attack_class[key]:
                     display_func(msg.format(attack_type))
                     autoplay_audio(os.path.join(current_dir, "beep_warning.mp3"))
                     break
