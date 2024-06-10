@@ -120,10 +120,15 @@ authenticator = stauth.Authenticate(
 )
 st.write(creds)
 
-name, authentication_status, username = authenticator.login(
-    'main', 'Введите свое имя пользователя и пароль',
-    fields={'Form name': 'Авторизоваться', 'Username':'Имя пользователя', 'Password':'Пароль', 'Login':'Вход'}
-)
+try:
+    name, authentication_status, username = authenticator.login(
+      'main', 'Введите свое имя пользователя и пароль', 
+      fields={'Form name': 'Авторизоваться', 'Username':'Имя пользователя', 'Password':'Пароль', 'Login':'Вход'})
+ except:
+  st.session = {}
+  name, authentication_status, username = authenticator.login(
+      'main', 'Введите свое имя пользователя и пароль', 
+      fields={'Form name': 'Авторизоваться', 'Username':'Имя пользователя', 'Password':'Пароль', 'Login':'Вход'})
 
 if authentication_status == False:
     st.error('Имя пользователя/пароль неверны')
