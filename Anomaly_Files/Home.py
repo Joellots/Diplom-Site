@@ -125,7 +125,7 @@ try:
       'main', 'Введите свое имя пользователя и пароль', 
       fields={'Form name': 'Авторизоваться', 'Username':'Имя пользователя', 'Password':'Пароль', 'Login':'Вход'})
 except:
-    st.session = {}
+    st.session = None
     name, authentication_status, username = authenticator.login(
       'main', 'Введите свое имя пользователя и пароль', 
       fields={'Form name': 'Авторизоваться', 'Username':'Имя пользователя', 'Password':'Пароль', 'Login':'Вход'})
