@@ -257,14 +257,13 @@ if authentication_status:
             st.success("Все хорошо. Обнаруженный трафик нормальный")
         else:
             attack_msg = {
-                'DOS': ("Обнаружена атака типа: {}; Тип атаки: Отказ в обслуживании (DOS)", st.error),
-                'PROBE': ("Обнаружена атака типа: {}; Тип атаки: Проникновение (Probe)", st.warning),
+                'DoS': ("Обнаружена атака типа: {}; Тип атаки: Отказ в обслуживании (DOS)", st.error),
+                'Probe': ("Обнаружена атака типа: {}; Тип атаки: Проникновение (Probe)", st.warning),
                 'R2L': ("Обнаружена атака типа: {}; Тип атаки: Удаленный доступ к локальному (R2L)", st.warning),
                 'U2R': ("Обнаружена атака типа: {}; Тип атаки: Локальный доступ к Root (U2R)", st.error)
             }
     
             for key, (msg, display_func) in attack_msg.items():
-                st.write(key)
                 if attack_type in attack_class[key]:
                     display_func(msg.format(attack_type))
                     autoplay_audio(os.path.join(current_dir, "beep_warning.mp3"))
