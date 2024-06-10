@@ -118,6 +118,7 @@ authenticator = stauth.Authenticate(
     10,
     "okorejoellots@gmail.com",
 )
+st.write(creds)
 
 name, authentication_status, username = authenticator.login(
     'main', 'Введите свое имя пользователя и пароль',
