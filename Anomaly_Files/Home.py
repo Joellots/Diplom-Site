@@ -264,6 +264,7 @@ if authentication_status:
             }
     
             for key, (msg, display_func) in attack_msg.items():
+                st.write(key)
                 if attack_type in attack_class[key]:
                     display_func(msg.format(attack_type))
                     autoplay_audio(os.path.join(current_dir, "beep_warning.mp3"))
