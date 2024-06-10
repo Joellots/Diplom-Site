@@ -251,30 +251,37 @@ if authentication_status:
     def remove_audio():
         st.markdown('<script>document.getElementById("beep").remove();</script>', unsafe_allow_html=True)
 
-    def display_prediction(prediction):
-        attack_type = prediction[0].upper()
-        if attack_type == 'NORMAL':
-            st.success("Все хорошо. Обнаруженный трафик нормальный")
-        else:
-            attack_msg = {
-                'DoS': ("Обнаружена атака типа: {}; Тип атаки: Отказ в обслуживании (DOS)", st.error),
-                'Probe': ("Обнаружена атака типа: {}; Тип атаки: Проникновение (Probe)", st.warning),
-                'R2L': ("Обнаружена атака типа: {}; Тип атаки: Удаленный доступ к локальному (R2L)", st.warning),
-                'U2R': ("Обнаружена атака типа: {}; Тип атаки: Локальный доступ к Root (U2R)", st.error)
-            }
-    
-            for key, (msg, display_func) in attack_msg.items():
-                if attack_type in attack_class[key]:
-                    display_func(msg.format(attack_type))
-                    autoplay_audio(os.path.join(current_dir, "beep_warning.mp3"))
-                    break
-
+    # Display the result
     if st.sidebar.button('Predict'):
+        # st.write(" ".join(map(str, input_df.stack().tolist())))
         prediction = model.predict(user_df.to_numpy())
         remove_audio()
         st.subheader("Прогноз:")
-        display_prediction(prediction)
-    
+        #st.write(f"{prediction[0]}")
+        if str(prediction[0]) == 'normal':
+            st.success(f"Все хорошо. Обнаруженный трафик нормальный")
+        else:
+            if str(prediction[0]) in cd.attack_class['DoS']:
+                st.error(f"""Обнаружена атака типа: {prediction[0].upper()}; 
+                            Тип атаки: Отказ в обслуживании (DOS)""")
+                autoplay_audio("beep_warning.mp3")
+                remove_audio()
+            elif str(prediction[0]) in cd.attack_class['Probe']:
+                st.warning(f"""Обнаружена атака типа: {prediction[0].upper()}; 
+                            Тип атаки: Проникновение (Probe)""")
+                remove_audio()
+                autoplay_audio("beep_warning.mp3")
+                remove_audio()
+            elif str(prediction[0]) in cd.attack_class['R2L']:
+                st.warning(f"""Обнаружена атака типа: {prediction[0].upper()}; 
+                            Тип атаки: Удаленный доступ к локальному (R2L)""")
+                autoplay_audio("beep_warning.mp3")
+                remove_audio()
+            elif str(prediction[0]) in cd.attack_class['U2R']:
+                st.error(f"""Обнаружена атака типа: {prediction[0].upper()}; 
+                            Тип атаки: Локальный доступ к Root (U2R)""")
+                autoplay_audio("beep_warning.mp3")
+                remove_audio()
     # Display the image
     webp_image = Image.open(os.path.join(current_dir, "detection_img.jpg"))
     jpg_image = webp_image.convert("RGB")
