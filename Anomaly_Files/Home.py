@@ -308,4 +308,4 @@ if authentication_status:
     st.markdown(help_content, unsafe_allow_html=True)
     
     # Create a link to the help page on the home page
-    st.markdown("[Перейти на страницу помощи](help)")
+    st.markdown("[Перейти на страницу помощи](Help)")
