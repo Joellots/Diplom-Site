@@ -82,9 +82,7 @@ feature_map = {
     'dst_host_srv_diff_host_rate': 'DESTINATION HOST SERVICE RATE FROM DIFFERENT HOST',
     'dst_host_srv_serror_rate': 'DESTINATION HOST SERVICE S-FLAG ERROR RATE',
     'dst_host_serror_rate': 'DESTINATION HOST S-FLAG ERROR RATE'
-    
-
-
+}
 
 
 # Set page configuration
