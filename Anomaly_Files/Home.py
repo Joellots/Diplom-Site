@@ -171,7 +171,7 @@ if authentication_status == None:
 
 if authentication_status:
     authenticator.logout('Выход', 'sidebar')
-    st.sidebar.title(f'Добро пожаловать {name}')
+    st.sidebar.title(f'Добро пожаловать {name}!')
 
     CUSTOM_CSS = """
     <style>
