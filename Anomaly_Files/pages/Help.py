@@ -68,7 +68,7 @@ features_list = [
     "DESTINATION HOST SAME SERVICE PORT RATE (dst_host_same_src_port_rate): Процент подключений, которые были подключены к одному и тому же исходному порту, среди подключений, агрегированных в DESTINATION HOST SERVICE COUNT (dst_host_srv_count)",
     "SAME SERVICE COUNT (srv_count): Количество подключений к той же службе (номер порта), что и текущее подключение, за последние две секунды",
     "DESTINATION HOST R-FLAG ERROR RATE (dst_host_rerror_rate): Процент подключений, для которых активирован флаг REJ, среди подключений, агрегированных в DESTINATION HOST COUNT (dst_host_count)",
-    "DESTINATION HOST S-FLAG ERROR RATE (dst_host_serror_rate): Процент подключений, для которых активирован флаг (4) s0, s1, s2 или s3, среди подключений, агрегированных в DESTINATION HOST COUNT (dst_host_count)"
+    "DESTINATION HOST S-FLAG ERROR RATE (dst_host_serror_rate): Процент подключений, для которых активирован флаг (4) s0, s1, s2 или s3, среди подключений, агрегированных в DESTINATION HOST COUNT (dst_host_count)",
     "DESTINATION HOST SAME SERVICE RATE (dst_host_same_srv_rate): Процент подключений к одной и той же службе среди подключений, агрегированных в DESTINATION HOST COUNT (dst_host_count)",
     "DESTINATION HOST DIFFERENT SERVICE RATE (dst_host_diff_srv_rate): Процент подключений к различным сервисам среди подключений, агрегированных в DESTIONATION HOST COUNT (dst_host_count)",
     "DESTINATION HOST SERVICE R-FLAG ERROR RATE (dst_host_srv_rerror_rate): Процент подключений, для которых активирован флаг REJ, среди подключений, агрегированных в DESTINATION HOST SERVICE COUNT (dst_host_srv_count)",
