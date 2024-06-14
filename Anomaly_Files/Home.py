@@ -296,22 +296,218 @@ if authentication_status:
     jpg_image = webp_image.convert("RGB")
     st.image(jpg_image, caption="Обнаружение аномалий в кибербезопасности сети", width=800)
 
+    #################################################################################
+    ############################## FUNCTIONS ########################################
+    #################################################################################
+    import os
+    import sys
+    import pandas as pd
+    from scapy.all import sniff
+    from scapy.layers.inet import IP, TCP
+    import psutil
+
+    def get_interface_names():
+            # Retrieve the network interface addresses
+            net_if_addrs = psutil.net_if_addrs()
+            
+            # Extract the interface names
+            interface_names = list(net_if_addrs.keys())
+            
+            return interface_names
+    
+    def capture_and_process_packets(interface):
+        # Ensure the current directory is in the system path
+        current_dir = os.path.dirname(__file__)
+        if current_dir not in sys.path:
+            sys.path.insert(0, current_dir)
+    
+        # Function to extract required fields from each packet
+        def extract_fields(packet):
+            if IP in packet and TCP in packet:
+                flags = packet.sprintf('%TCP.flags%')
+                return {
+                    'frame.time_relative': packet.time,
+                    'ip.proto': packet[IP].proto,
+                    'tcp.flags': flags,
+                    'ip.len': len(packet[IP]),
+                    'tcp.srcport': packet[TCP].sport,
+                    'tcp.dstport': packet[TCP].dport,
+                    'tcp.flags.reset': 'R' in flags,  # RST flag
+                    'tcp.flags.syn': 'S' in flags,    # SYN flag
+                    'ip.frag_offset': packet[IP].frag,
+                    'tcp.urgent_pointer': packet[TCP].urgptr
+                }
+            else:
+                return None
+    
+        # Function to map tcp.flags to the provided textual representation
+        def map_flags(tcp_flags):
+            flag_mapping = {
+                'R': 'REJ',
+                'SA': 'S2',
+                'S': 'S0',
+                'FA': 'SF',
+                'RA': 'RSTR',
+                'F': 'SH',
+                'SAE': 'S3',  # Assuming SAE as S3
+                'PA': 'OTH',  # Example: PA can be considered as OTH (not directly mapped)
+                '': 'OTH'  # Any other combination
+            }
+    
+            # Combine all possible flag combinations into their corresponding textual representation
+            if 'R' in tcp_flags and 'S' in tcp_flags:
+                return 'RSTOS0'
+            if 'R' in tcp_flags and 'A' in tcp_flags:
+                return 'RSTR'
+            if 'R' in tcp_flags:
+                return 'REJ'
+            if 'S' in tcp_flags and 'F' in tcp_flags:
+                return 'SH'
+            if 'S' in tcp_flags and 'A' in tcp_flags:
+                return 'S2'
+            if 'S' in tcp_flags:
+                return 'S0'
+            if 'F' in tcp_flags and 'A' in tcp_flags:
+                return 'SF'
+            if 'F' in tcp_flags:
+                return 'SH'
+            if 'S' in tcp_flags and ('E' in tcp_flags or 'C' in tcp_flags):
+                return 'S3'
+            return flag_mapping.get(tcp_flags, 'OTH')
+    
+        # List to store packet data
+        packet_data = []
+    
+        # Packet handler function
+        def packet_handler(packet):
+            fields = extract_fields(packet)
+            if fields:
+                fields['tcp.flags.mapped'] = map_flags(fields['tcp.flags'])
+                packet_data.append(fields)
+    
+        # Capture packets (example capturing 50 packets)
+        sniff(iface=interface, prn=packet_handler, filter='ip', count=50)
+    
+        # Convert list of dictionaries to DataFrame
+        df = pd.DataFrame(packet_data)
+
+        def compute_metrics(df):
+            df['dst_host_srv_count'] = df.apply(lambda row: compute_dst_host_srv_count(df, row['tcp.dstport']), axis=1)
+            df['dst_host_same_srv_rate'] = df.apply(lambda row: compute_dst_host_same_srv_rate(df, row['tcp.dstport']), axis=1)
+            df['dst_host_srv_diff_host_rate'] = df.apply(lambda row: compute_dst_host_srv_diff_host_rate(df, row['tcp.dstport']), axis=1)
+            df['dst_host_srv_serror_rate'] = df.apply(lambda row: compute_dst_host_srv_serror_rate(df, row['tcp.dstport']), axis=1)
+            df['count'] = df.apply(lambda row: compute_count(df, row['tcp.dstport']), axis=1)
+            df['diff_srv_rate'] = df.apply(lambda row: compute_diff_srv_rate(df, row['tcp.srcport']), axis=1) 
+            df['dst_host_serror_rate'] = df.apply(lambda row: compute_dst_host_serror_rate(df, row['tcp.dstport']), axis=1)
+            df['same_srv_rate'] = df.apply(lambda row: compute_same_srv_rate(df, row['tcp.srcport']), axis=1)
+            df['dst_host_diff_srv_rate'] = df.apply(lambda row: compute_dst_host_diff_srv_rate(df, row['tcp.dstport']), axis=1)
+            df['src_bytes'] = df['ip.len']
+            df['dst_bytes'] = df['tcp.urgent_pointer']    
+            df['dst_host_rerror_rate'] = df.apply(lambda row: compute_dst_host_rerror_rate(df, row['tcp.dstport']), axis=1)
+          
+            return df
+
+        # Define helper functions for metrics calculation
+        def compute_same_srv_rate(df, src_port):
+            same_srv_connections = df[df['tcp.srcport'] == src_port]
+            total_connections = len(df)
+            if total_connections > 0:
+                return len(same_srv_connections) / total_connections
+            else:
+                return 0.0
+        
+        def compute_diff_srv_rate(df, src_port):
+            diff_srv_connections = df[df['tcp.srcport'] != src_port]
+            total_connections = len(df)
+            if total_connections > 0:
+                return len(diff_srv_connections) / total_connections
+            else:
+                return 0.0
+        
+        def compute_dst_host_same_srv_rate(df, dst_port):
+            same_srv_connections = df[df['tcp.dstport'] == dst_port]
+            total_connections = len(df)
+            if total_connections > 0:
+                return len(same_srv_connections) / total_connections
+            else:
+                return 0.0
+        
+        def compute_dst_host_srv_diff_host_rate(df, dst_port):
+            diff_srv_connections = df[df['tcp.dstport'] != dst_port]
+            total_connections = len(df)
+            if total_connections > 0:
+                return len(diff_srv_connections) / total_connections
+            else:
+                return 0.0
+        
+        def compute_dst_host_srv_count(df, dst_port):
+            srv_count = len(df[df['tcp.dstport'] == dst_port])
+            return srv_count
+        
+        def compute_dst_host_diff_srv_rate(df, dst_port):
+            total_connections = len(df)
+            dst_host_count = len(df[df['tcp.dstport'] == dst_port])
+            if total_connections > 0:
+                return (total_connections - dst_host_count) / total_connections
+            else:
+                return 0.0
+        
+        def compute_dst_host_srv_serror_rate(df, dst_port):
+            serror_connections = df[(df['tcp.dstport'] == dst_port) & (df['tcp.flags.syn'] == True)]
+            total_connections = len(df)
+            if total_connections > 0:
+                return len(serror_connections) / total_connections
+            else:
+                return 0.0
+        
+        def compute_dst_host_rerror_rate(df, dst_port):
+            rerror_connections = df[(df['tcp.dstport'] == dst_port) & (df['tcp.flags.reset'] == True)]
+            total_connections = len(df)
+            if total_connections > 0:
+                return len(rerror_connections) / total_connections
+            else:
+                return 0.0
+        
+        def compute_dst_host_serror_rate(df, dst_port):
+            serror_connections = df[(df['tcp.dstport'] == dst_port) & (df['tcp.flags.syn'] == True)]
+            total_connections = len(df)
+            if total_connections > 0:
+                return len(serror_connections) / total_connections
+            else:
+                return 0.0
+        
+        def compute_count(df, dst_port):
+            count_connections = len(df[df['tcp.dstport'] == dst_port])
+            return count_connections
+        
+        
+        def process_packet_capture_data(df):
+            df_with_metrics = compute_metrics(df)
+            return df_with_metrics
+            
+                # Process the DataFrame
+                processed_df = process_packet_capture_data(df)
+            
+                return processed_df
+        return process_packet_capture_data(df)
+    #################################################################################
+    ############################## FUNCTIONS ########################################
+    #################################################################################
+
 
     #################################################################################
-    ##############################USER NETWORK TESTING #############################
+    ############################## USER NETWORK TESTING #############################
     #################################################################################
     with st.expander("ПРОТЕСТИРУЙТЕ СВОЮ СЕТЬ"):
         try:
-            import scapy_sniff
-
-            interfaces = scapy_sniff.get_interface_names()
+            
+            interfaces = get_interface_names()
             interface = st.selectbox("Выберите Сетевой Интерфейс:", interfaces)
             st.markdown(interfaces)
 
             if st.button('протестировать сеть'):
-                scapy_sniff.sniff(iface=interface, prn=scapy_sniff.packet_handler, filter='ip', count=50)
-
-                scapy_sniff.df = pd.DataFrame(scapy_sniff.packet_data)
+                
+                packets = capture_and_process_packets(interface)
                 
                 packets_df = scapy_sniff.processed_df.rename(columns={'tcp.flags.mapped': 'flag'})
 
