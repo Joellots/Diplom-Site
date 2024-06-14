@@ -484,11 +484,8 @@ if authentication_status:
         def process_packet_capture_data(df):
             df_with_metrics = compute_metrics(df)
             return df_with_metrics
+                    
             
-                # Process the DataFrame
-                processed_df = process_packet_capture_data(df)
-            
-                return processed_df
         return process_packet_capture_data(df)
     #################################################################################
     ############################## FUNCTIONS ########################################
