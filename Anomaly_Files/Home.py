@@ -346,7 +346,10 @@ if authentication_status:
                         remove_audio()
         except Exception as e:
                 st.error(e)
-    st.markdown("ПРОТЕСТИРУЙТЕ СВОЮ СЕТЬ", unsafe_allow_html=True)
+            
+    #################################################################################
+    ##############################USER NETWORK TESTING #############################
+    #################################################################################
     
     # Define the content for the help page
     help_content = """
