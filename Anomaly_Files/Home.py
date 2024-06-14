@@ -304,7 +304,9 @@ if authentication_status:
         try:
             import scapy_sniff
 
-           
+            interfaces = scapy_sniff.get_interface_names()
+            interface = st.selectbox("Выберите Сетевой Интерфейс:", interfaces)
+            st.markdown(interfaces)
 
             if st.button('протестировать сеть'):
                 scapy_sniff.sniff(iface=interface, prn=scapy_sniff.packet_handler, filter='ip', count=50)
