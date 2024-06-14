@@ -302,7 +302,10 @@ if authentication_status:
     with st.expander("ПРОТЕСТИРУЙТЕ СВОЮ СЕТЬ"):
         try:
             import scapy_sniff
-
+            try:
+                inter = scapy_sniff.get_interface_names()
+            except Exception as e:
+                st.error(e)
             interface = st.sidebar.selectbox("Выберите Сетевой Интерфейс:", scapy_sniff.get_interface_names())
 
             scapy_sniff.sniff(iface=interface, prn=scapy_sniff.packet_handler, filter='ip', count=50)
