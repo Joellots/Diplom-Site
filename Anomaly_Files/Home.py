@@ -306,47 +306,7 @@ if authentication_status:
                 inter = scapy_sniff.get_interface_names()
             except Exception as e:
                 st.error(e)
-            interface = st.sidebar.selectbox("Выберите Сетевой Интерфейс:", scapy_sniff.get_interface_names())
-
-            scapy_sniff.sniff(iface=interface, prn=scapy_sniff.packet_handler, filter='ip', count=50)
-
-            scapy_sniff.df = pd.DataFrame(scapy_sniff.packet_data)
-            packets_dataframe = scapy_sniff.processed_df(scapy_sniff.df)
-            packets_dataframe = packets_dataframe.rename(columns={'tcp.flags': 'flag'})
-
-            pred_packets = pd.DataFrame(packets_dataframe.to_numpy(),header=None, columns=KBestFeatures)
-
-            if st.sidebar.button('Прогнозировать'):
-                # st.write(" ".join(map(str, input_df.stack().tolist())))
-                preds = model.predict(pred_packets.to_numpy())
-                prediction = mode(preds)[0][0]
-                remove_audio()
-                st.subheader("Прогноз:")
-                #st.write(f"{prediction[0]}")
-                if str(prediction[0]) == 'normal':
-                    st.success(f"Все хорошо. Обнаруженный трафик нормальный")
-                else:
-                    if str(prediction[0]) in attack_class['DoS']:
-                        st.error(f"""Обнаружена атака типа: {prediction[0].upper()}; 
-                                    Тип атаки: Отказ в обслуживании (DOS)""")
-                        autoplay_audio(os.path.join(current_dir, "beep_warning.mp3"))
-                        remove_audio()
-                    elif str(prediction[0]) in attack_class['Probe']:
-                        st.warning(f"""Обнаружена атака типа: {prediction[0].upper()}; 
-                                    Тип атаки: Проникновение (Probe)""")
-                        remove_audio()
-                        autoplay_audio(os.path.join(current_dir, "beep_warning.mp3"))
-                        remove_audio()
-                    elif str(prediction[0]) in attack_class['R2L']:
-                        st.warning(f"""Обнаружена атака типа: {prediction[0].upper()}; 
-                                    Тип атаки: Удаленный доступ к локальному (R2L)""")
-                        autoplay_audio(os.path.join(current_dir, "beep_warning.mp3"))
-                        remove_audio()
-                    elif str(prediction[0]) in attack_class['U2R']:
-                        st.error(f"""Обнаружена атака типа: {prediction[0].upper()}; 
-                                    Тип атаки: Локальный доступ к Root (U2R)""")
-                        autoplay_audio(os.path.join(current_dir, "beep_warning.mp3"))
-                        remove_audio()
+            
         except Exception as e:
                 st.error(e)
             
