@@ -16,6 +16,7 @@ import firebase_admin
 from firebase_admin import credentials, auth
 import json
 from scipy.stats import mode
+import numpy as np
 
 # Get the current working directory (where your script is located)
 current_dir = os.path.dirname(__file__)
@@ -302,17 +303,59 @@ if authentication_status:
     with st.expander("ПРОТЕСТИРУЙТЕ СВОЮ СЕТЬ"):
         try:
             import scapy_sniff
-            try:
-                inter = scapy_sniff.get_interface_names()
-            except Exception as e:
-                st.error(e)
+
+            interfaces = scapy_sniff.get_interface_names()
+            interface = st.selectbox("Выберите Сетевой Интерфейс:", interfaces)
+            st.markdown(interfaces)
             
+
+            if st.button('протестировать сеть'):
+                scapy_sniff.sniff(iface=interface, prn=scapy_sniff.packet_handler, filter='ip', count=50)
+
+                scapy_sniff.df = pd.DataFrame(scapy_sniff.packet_data)
+                
+                packets_df = scapy_sniff.processed_df.rename(columns={'tcp.flags.mapped': 'flag'})
+
+                raw_pred_df = pd.DataFrame(packets_df[KBestFeatures].to_numpy(),columns=KBestFeatures)
+                raw_pred_df[KB_numeric_cols] = scaler.transform(raw_pred_df[KB_numeric_cols])
+                raw_pred_df[encoded_cols] = encoder.transform(raw_pred_df[KB_categorical_cols])
+                pred_packets_df = raw_pred_df[KB_numeric_cols + encoded_cols].copy()
+                
+                preds = model.predict(pred_packets_df.to_numpy())
+
+                unique_values, counts = np.unique(preds, return_counts=True)
+                most_frequent_index = np.argmax(counts)
+                
+                prediction = unique_values[most_frequent_index]
+                remove_audio()
+                st.subheader("Прогноз:")
+                #st.write(f"{prediction[0]}")
+                if str(prediction) == 'normal':
+                    st.success(f"Все хорошо. Обнаруженный трафик нормальный")
+                else:
+                    if str(prediction) in attack_class['DoS']:
+                        st.error(f"""Обнаружена атака типа: {prediction.upper()}; 
+                                    Тип атаки: Отказ в обслуживании (DOS)""")
+                        autoplay_audio(os.path.join(current_dir, "beep_warning.mp3"))
+                        remove_audio()
+                    elif str(prediction) in attack_class['Probe']:
+                        st.warning(f"""Обнаружена атака типа: {prediction.upper()}; 
+                                    Тип атаки: Проникновение (Probe)""")
+                        remove_audio()
+                        autoplay_audio(os.path.join(current_dir, "beep_warning.mp3"))
+                        remove_audio()
+                    elif str(prediction) in attack_class['R2L']:
+                        st.warning(f"""Обнаружена атака типа: {prediction.upper()}; 
+                                    Тип атаки: Удаленный доступ к локальному (R2L)""")
+                        autoplay_audio(os.path.join(current_dir, "beep_warning.mp3"))
+                        remove_audio()
+                    elif str(prediction) in attack_class['U2R']:
+                        st.error(f"""Обнаружена атака типа: {prediction.upper()}; 
+                                    Тип атаки: Локальный доступ к Root (U2R)""")
+                        autoplay_audio(os.path.join(current_dir, "beep_warning.mp3"))
+                        remove_audio()
         except Exception as e:
                 st.error(e)
-            
-    #################################################################################
-    ##############################USER NETWORK TESTING #############################
-    #################################################################################
     
     # Define the content for the help page
     help_content = """
