@@ -89,6 +89,8 @@ def packet_handler(packet):
 # Capture packets (example capturing 50 packets)
 sniff(iface='', prn=packet_handler, filter='ip', count=50)
 
+processed_df = process_packet_capture_data(df)
+
 # Convert list of dictionaries to DataFrame
 df = pd.DataFrame(packet_data)
 
