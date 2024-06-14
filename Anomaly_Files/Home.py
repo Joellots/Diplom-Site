@@ -3,7 +3,7 @@ import time
 import base64
 import random
 import string
-
+import sys
 import streamlit as st
 import pandas as pd
 from joblib import load
@@ -15,6 +15,14 @@ from google.cloud import firestore
 import firebase_admin
 from firebase_admin import credentials, auth
 import json
+from scipy.stats import mode
+
+# Get the current working directory (where your script is located)
+current_dir = os.path.dirname(__file__)
+
+# Insert this directory into sys.path if it's not already there
+if current_dir not in sys.path:
+    sys.path.insert(0, current_dir)
 
 columns = ["duration","protocol_type","service","flag","src_bytes","dst_bytes","land","wrong_fragment","urgent","hot","num_failed_logins","logged_in","num_compromised","root_shell","su_attempted","num_root","num_file_creations","num_shells","num_access_files","num_outbound_cmds","is_host_login","is_guest_login","count","srv_count","serror_rate", "srv_serror_rate","rerror_rate","srv_rerror_rate","same_srv_rate", "diff_srv_rate", "srv_diff_host_rate","dst_host_count","dst_host_srv_count","dst_host_same_srv_rate","dst_host_diff_srv_rate","dst_host_same_src_port_rate","dst_host_srv_diff_host_rate","dst_host_serror_rate","dst_host_srv_serror_rate","dst_host_rerror_rate","dst_host_srv_rerror_rate","attack", "last_flag"]
 
@@ -102,6 +110,7 @@ def get_creds(db):
 # Initialize Firebase
 current_dir = os.path.dirname(os.path.abspath(__file__))
 config_path = os.path.join(current_dir, 'config.yaml')
+parent_directory = os.path.abspath(os.path.join(current_dir, os.pardir))
 st.logo(os.path.join(current_dir, 'knrtu_logo.png'), link=None)
 
 cred_path = os.path.join(current_dir, 'anomaly-detection-d4b91-firebase-adminsdk-lwlgg-d92f4bd41c.json')
@@ -251,7 +260,7 @@ if authentication_status:
         st.markdown('<script>document.getElementById("beep").remove();</script>', unsafe_allow_html=True)
 
     # Display the result
-    if st.sidebar.button('Predict'):
+    if st.sidebar.button('Прогнозировать'):
         # st.write(" ".join(map(str, input_df.stack().tolist())))
         prediction = model.predict(user_df.to_numpy())
         remove_audio()
@@ -285,6 +294,59 @@ if authentication_status:
     webp_image = Image.open(os.path.join(current_dir, "detection_img.jpg"))
     jpg_image = webp_image.convert("RGB")
     st.image(jpg_image, caption="Обнаружение аномалий в кибербезопасности сети", width=800)
+
+
+    #################################################################################
+    ##############################USER NETWORK TESTING #############################
+    #################################################################################
+    with st.expander("ПРОТЕСТИРУЙТЕ СВОЮ СЕТЬ"):
+        try:
+            import scapy_sniff
+
+            interface = st.sidebar.selectbox("Выберите Сетевой Интерфейс:", scapy_sniff.get_interface_names())
+
+            scapy_sniff.sniff(iface=interface, prn=scapy_sniff.packet_handler, filter='ip', count=50)
+
+            scapy_sniff.df = pd.DataFrame(scapy_sniff.packet_data)
+            packets_dataframe = scapy_sniff.processed_df(scapy_sniff.df)
+            packets_dataframe = packets_dataframe.rename(columns={'tcp.flags': 'flag'})
+
+            pred_packets = pd.DataFrame(packets_dataframe.to_numpy(),header=None, columns=KBestFeatures)
+
+            if st.sidebar.button('Прогнозировать'):
+                # st.write(" ".join(map(str, input_df.stack().tolist())))
+                preds = model.predict(pred_packets.to_numpy())
+                prediction = mode(preds)[0][0]
+                remove_audio()
+                st.subheader("Прогноз:")
+                #st.write(f"{prediction[0]}")
+                if str(prediction[0]) == 'normal':
+                    st.success(f"Все хорошо. Обнаруженный трафик нормальный")
+                else:
+                    if str(prediction[0]) in attack_class['DoS']:
+                        st.error(f"""Обнаружена атака типа: {prediction[0].upper()}; 
+                                    Тип атаки: Отказ в обслуживании (DOS)""")
+                        autoplay_audio(os.path.join(current_dir, "beep_warning.mp3"))
+                        remove_audio()
+                    elif str(prediction[0]) in attack_class['Probe']:
+                        st.warning(f"""Обнаружена атака типа: {prediction[0].upper()}; 
+                                    Тип атаки: Проникновение (Probe)""")
+                        remove_audio()
+                        autoplay_audio(os.path.join(current_dir, "beep_warning.mp3"))
+                        remove_audio()
+                    elif str(prediction[0]) in attack_class['R2L']:
+                        st.warning(f"""Обнаружена атака типа: {prediction[0].upper()}; 
+                                    Тип атаки: Удаленный доступ к локальному (R2L)""")
+                        autoplay_audio(os.path.join(current_dir, "beep_warning.mp3"))
+                        remove_audio()
+                    elif str(prediction[0]) in attack_class['U2R']:
+                        st.error(f"""Обнаружена атака типа: {prediction[0].upper()}; 
+                                    Тип атаки: Локальный доступ к Root (U2R)""")
+                        autoplay_audio(os.path.join(current_dir, "beep_warning.mp3"))
+                        remove_audio()
+        except Exception as e:
+                st.error(e)
+    st.markdown("ПРОТЕСТИРУЙТЕ СВОЮ СЕТЬ", unsafe_allow_html=True)
     
     # Define the content for the help page
     help_content = """
