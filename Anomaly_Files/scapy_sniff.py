@@ -9,9 +9,8 @@ if current_dir not in sys.path:
 import pandas as pd
 from scapy.all import sniff
 from scapy.layers.inet import IP, TCP
-from process_cap_df import process_packet_capture_data
+from process_cap_df import compute_metrics
 import psutil
-import streamlit as st
 
 # Function to extract required fields from each packet
 def extract_fields(packet):
@@ -20,6 +19,8 @@ def extract_fields(packet):
         return {
             'frame.time_relative': packet.time,
             'ip.proto': packet[IP].proto,
+            'ip.src': packet[IP].src,
+            'ip.dst': packet[IP].dst,
             'tcp.flags': flags,
             'ip.len': len(packet[IP]),
             'tcp.srcport': packet[TCP].sport,
@@ -73,7 +74,7 @@ def get_interface_names():
     
     # Extract the interface names
     interface_names = list(net_if_addrs.keys())
-    st.markdown(interface_names)
+    
     return interface_names
 
 # List to store packet data
@@ -92,5 +93,5 @@ sniff(iface='', prn=packet_handler, filter='ip', count=50)
 # Convert list of dictionaries to DataFrame
 df = pd.DataFrame(packet_data)
 
-processed_df = process_packet_capture_data(df)
-
+processed_df = compute_metrics(df)
+#df.to_csv('OUTPUT_packets.csv', index=False)
