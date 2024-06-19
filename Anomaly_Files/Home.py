@@ -300,71 +300,71 @@ if authentication_status:
     #################################################################################
     ##############################USER NETWORK TESTING #############################
     #################################################################################
-    st.header("ПРОТЕСТИРУЙТЕ СВОЮ СЕТЬ", divider='rainbow')
-    try:
-        import scapy_sniff
-        import time
-        import threading
+    # st.header("ПРОТЕСТИРУЙТЕ СВОЮ СЕТЬ", divider='rainbow')
+    # try:
+    #     import scapy_sniff
+    #     import time
+    #     import threading
 
-        interfaces = scapy_sniff.get_interface_names()
-        interface = st.selectbox("Выберите Сетевой Интерфейс:", interfaces)
+    #     interfaces = scapy_sniff.get_interface_names()
+    #     interface = st.selectbox("Выберите Сетевой Интерфейс:", interfaces)
 
-        def long_computation():
-            time.sleep(5) 
+    #     def long_computation():
+    #         time.sleep(5) 
         
 
-        if st.button('протестировать сеть'):
+    #     if st.button('протестировать сеть'):
 
-            with st.spinner('Тестирование продолжается...'):
-                scapy_sniff.sniff(iface=interface, prn=scapy_sniff.packet_handler, count=200) #  filter='ip'
+    #         with st.spinner('Тестирование продолжается...'):
+    #             scapy_sniff.sniff(iface=interface, prn=scapy_sniff.packet_handler, count=200) #  filter='ip'
 
-                scapy_sniff.df = pd.DataFrame(scapy_sniff.packet_data)
+    #             scapy_sniff.df = pd.DataFrame(scapy_sniff.packet_data)
                 
-                packets_df = scapy_sniff.processed_df
-                # packets_df = scapy_sniff.processed_df.rename(columns={'tcp.flags.mapped': 'flag'})
+    #             packets_df = scapy_sniff.processed_df
+    #             # packets_df = scapy_sniff.processed_df.rename(columns={'tcp.flags.mapped': 'flag'})
                 
-                packets_df.to_csv('OUTPUT.csv', index=False)
+    #             packets_df.to_csv('OUTPUT.csv', index=False)
 
-                raw_pred_df = pd.DataFrame(packets_df[KBestFeatures].to_numpy(),columns=KBestFeatures)
-                raw_pred_df[KB_numeric_cols] = scaler.transform(raw_pred_df[KB_numeric_cols])
-                raw_pred_df[encoded_cols] = encoder.transform(raw_pred_df[KB_categorical_cols])
-                pred_packets_df = raw_pred_df[KB_numeric_cols + encoded_cols].copy()
+    #             raw_pred_df = pd.DataFrame(packets_df[KBestFeatures].to_numpy(),columns=KBestFeatures)
+    #             raw_pred_df[KB_numeric_cols] = scaler.transform(raw_pred_df[KB_numeric_cols])
+    #             raw_pred_df[encoded_cols] = encoder.transform(raw_pred_df[KB_categorical_cols])
+    #             pred_packets_df = raw_pred_df[KB_numeric_cols + encoded_cols].copy()
                 
-                preds = model.predict(pred_packets_df.to_numpy())
+    #             preds = model.predict(pred_packets_df.to_numpy())
 
-                unique_values, counts = np.unique(preds, return_counts=True)
-                most_frequent_index = np.argmax(counts)
+    #             unique_values, counts = np.unique(preds, return_counts=True)
+    #             most_frequent_index = np.argmax(counts)
                 
-                prediction = unique_values[most_frequent_index]
-            remove_audio()
-            st.subheader("Прогноз:")
-            #st.write(f"{prediction[0]}")
-            if str(prediction) == 'normal':
-                st.success(f"Все хорошо. Обнаруженный трафик нормальный")
-            else:
-                if str(prediction) in attack_class['DoS']:
-                    st.error(f"""Обнаружена атака типа: {prediction.upper()}; 
-                                Тип атаки: Отказ в обслуживании (DOS)""")
-                    autoplay_audio(os.path.join(current_dir, "beep_warning.mp3"))
-                    remove_audio()
-                elif str(prediction) in attack_class['Probe']:
-                    st.warning(f"""Обнаружена атака типа: {prediction.upper()}; 
-                                Тип атаки: Проникновение (Probe)""")
-                    remove_audio()
-                    autoplay_audio(os.path.join(current_dir, "beep_warning.mp3"))
-                    remove_audio()
-                elif str(prediction) in attack_class['R2L']:
-                    st.warning(f"""Обнаружена атака типа: {prediction.upper()}; 
-                                Тип атаки: Удаленный доступ к локальному (R2L)""")
-                    autoplay_audio(os.path.join(current_dir, "beep_warning.mp3"))
-                    remove_audio()
-                elif str(prediction) in attack_class['U2R']:
-                    st.error(f"""Обнаружена атака типа: {prediction.upper()}; 
-                                Тип атаки: Локальный доступ к Root (U2R)""")
-                    autoplay_audio(os.path.join(current_dir, "beep_warning.mp3"))
-                    remove_audio()
-    except Exception as e:
-            st.error(e)
+    #             prediction = unique_values[most_frequent_index]
+    #         remove_audio()
+    #         st.subheader("Прогноз:")
+    #         #st.write(f"{prediction[0]}")
+    #         if str(prediction) == 'normal':
+    #             st.success(f"Все хорошо. Обнаруженный трафик нормальный")
+    #         else:
+    #             if str(prediction) in attack_class['DoS']:
+    #                 st.error(f"""Обнаружена атака типа: {prediction.upper()}; 
+    #                             Тип атаки: Отказ в обслуживании (DOS)""")
+    #                 autoplay_audio(os.path.join(current_dir, "beep_warning.mp3"))
+    #                 remove_audio()
+    #             elif str(prediction) in attack_class['Probe']:
+    #                 st.warning(f"""Обнаружена атака типа: {prediction.upper()}; 
+    #                             Тип атаки: Проникновение (Probe)""")
+    #                 remove_audio()
+    #                 autoplay_audio(os.path.join(current_dir, "beep_warning.mp3"))
+    #                 remove_audio()
+    #             elif str(prediction) in attack_class['R2L']:
+    #                 st.warning(f"""Обнаружена атака типа: {prediction.upper()}; 
+    #                             Тип атаки: Удаленный доступ к локальному (R2L)""")
+    #                 autoplay_audio(os.path.join(current_dir, "beep_warning.mp3"))
+    #                 remove_audio()
+    #             elif str(prediction) in attack_class['U2R']:
+    #                 st.error(f"""Обнаружена атака типа: {prediction.upper()}; 
+    #                             Тип атаки: Локальный доступ к Root (U2R)""")
+    #                 autoplay_audio(os.path.join(current_dir, "beep_warning.mp3"))
+    #                 remove_audio()
+    # except Exception as e:
+    #         st.error(e)
     
     # Define the content for the help page
     st.header("Содержимое Страницы Помощи", divider='rainbow')
